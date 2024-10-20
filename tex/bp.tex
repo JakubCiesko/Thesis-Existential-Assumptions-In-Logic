@@ -1,0 +1,973 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage{graphicx}
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{amsfonts}
+\usepackage{csquotes}
+\usepackage[style=authoryear,sorting=nyt,backend=bibtex]{biblatex} %nty predtym
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{a4wide}
+\usepackage{multirow,booktabs,setspace,caption}
+\usepackage{hyperref}
+\usepackage{logicproof}
+\usepackage{newfloat}
+
+\setlength{\belowcaptionskip}{-10pt}
+\definecolor{myBlue}{RGB}{204,223,230}
+\definecolor{myPink}{RGB}{246,230,240}
+
+\newcounter{usudokfig}
+\DeclareCaptionLabelFormat{usudok}{Úsudok \arabic{usudokfig}}
+\newcounter{diagramFig}
+\DeclareCaptionLabelFormat{diagram}{Diagram \arabic{diagramFig}}
+\DeclareFloatingEnvironment[name=Diagram,listname={Zoznam diagramov}]{diagram}
+\DeclareFloatingEnvironment[name=Úsudok,listname={Zoznam úsudkov}]{usudok}
+
+\graphicspath{{}}
+\addbibresource{bibliografia.bib}
+
+
+\newcommand*{\defeq}{\mathrel{\vcenter{\baselineskip0.5ex \lineskiplimit0pt
+                     \hbox{\scriptsize.}\hbox{\scriptsize.}}}%
+                     =}
+
+%\DeclareRobustCommand{\VAN}[3]{#3}
+
+\title{Bakalárska práca}
+\author{Jakub Čieško}
+\date{}
+
+
+\begin{document}
+	\pagenumbering{gobble}
+	\onehalfspacing  %SPACING
+	\begin{titlepage}
+		    \centering
+		    
+		  \onehalfspacing 
+		  \vspace*{-1.5cm}
+		    {UNIVERZITA PALACKÉHO V OLOMOUCI\par
+		     FILOZOFICKÁ FAKULTA\par
+		    KATEDRA FILOZOFIE} 
+		    \vspace{6.5cm} 
+    
+		    {\Large 
+		    \textbf{Prázdna doména v predikátovej logike prvého rádu}\\Bakalárska diplomová práca} % Centered in the middle
+		    
+		    %\vspace{0.5cm} % Adjust vertical space
+		    %\begin{center}
+		     %   \includegraphics[width=0.4\textwidth]{logo.png} % Insert the logo
+		    %\end{center}
+		    
+		    \vfill % Fill remaining space
+		    \noindent Olomouc 2024 \hfill Vypracoval: Jakub Čieško\par
+		    \hfill Vedúci práce: Mgr. Karel Šebela, Ph.D.
+	
+	\end{titlepage}
+	
+	
+	\clearpage
+	\pagenumbering{arabic}
+	
+	\setcounter{page}{2}
+	\vspace*{\fill}
+	\noindent Vyhlasujem, že som túto diplomovú bakalársku prácu vypracoval samostatne, a že som riadne uviedol všetky použité zdroje a literatúru. 
+	\\ 
+	\\
+	\\
+	V Olomouci, 3.5.2024\hfill........................................................\par
+	\hfill Jakub Čieško \hspace*{1.75cm}
+	\vspace*{5cm}
+	\clearpage
+
+	\begin{figure}[p] % Use [p] to force the figure to be on a separate page
+	    \centering
+	    
+	    % Top half (Abstract 1)
+	    \begin{minipage}[t][0.4\textheight][t]{\textwidth}
+	        \begin{center} \textbf{Abstrakt} \end{center} \par
+	        Táto práca sa zaoberá existenčnými predpokladmi v klasickej predikátovej logike prvého rádu, v ktorej doména diskurzu nemôže byť prázdna.
+Táto požiadavka znamená, že v akomkoľvek zvolenom univerze musí existovať aspoň jedno indivíduum. Existuje však aj logika, ktorá túto podmienku neuznáva a umožňuje prázdne domény; Quine túto logiku nazval inkluzívnou. Táto práca sa venuje tomu, aké dôsledky má prechod od klasickej ku inkluzívnej logike. Ukážeme, ako sa zmenia definície spĺňania, a aký to má vplyv na množinu pravdivých formúl. Predstavíme si aj Quineovu procedúru, ako jednoducho určiť pravdivosť uzavretých formúl v inkluzívnej logike tak, že označíme všetky univerzálne kvantifikované formuly za pravdivé a existenčné za nepravdivé. V druhej časti práce sa pokúsime očistiť logiku od ďalšieho existenčného predpokladu: termy logiky nesmú byť prázdne, musia niečo označovať. Logika, ktorá povoľuje prázdne termy, sa nazýva voľná logika. Ukážeme si rôzne prístupy k sémantike voľných logík, a ako sa dajú tieto logiky využiť vo fikcii, určitých popisoch, teórii množín a pri definícii parciálnych a nestriktných funkcií.
+Hlavným cieľom práce je teda postupne ukázať, aké dôsledky vyplývajú z toho, keď sa logiku pokúsime postupne očistiť od všetkých existenčných predpokladov.
+	       
+	    \end{minipage}
+	    \begin{minipage}[t][0.1\textheight][t]{\textwidth}
+	        \textbf{Kľúčové slová}: prázdna doména diskurzu, inkluzívna logika, existenčné predpoklady v logike, voľná logika, sémantiky voľných logík, aplikácia voľnej logiky
+	    \end{minipage}
+	    
+	    \vspace{0.005\textheight} % Adjust vertical space between halves
+	    
+	    % Bottom half (Abstract 2)
+	    \begin{minipage}[t][0.4\textheight][t]{\textwidth}
+	         \begin{center}\textbf{Abstract} \end{center}
+	      This thesis deals with existence assumptions in classical first-order predicate logic, in which the domain of discourse cannot be empty.
+This requirement implies that at least one individual must exist in any chosen universe. However, there is also a logic that does not obey this condition and allows for empty domains; Quine dubbed this logic inclusive. This thesis explores what the implications of the transition from classical to inclusive logic are. We will show how the definitions of satisfiability change, and how this affects the set of true formulas. We will also introduce Quine's procedure for simply determining the truth of closed formulas in inclusive logic by labeling all universally quantified formulas as true and existential formulas as false. In the second part of the thesis, we will try to purify logic from another existential assumption: the terms of logic must not be empty, they must denote something. A logic that allows empty terms is called a free logic. We will show various approaches to the semantics of free logics, and how these logics can be used in fiction, definite descriptions, set theory, and in the definition of partial and nonstrict functions.
+The main goal of the thesis is thus to show, step by step, what consequences follow if we try to gradually purify the logic from all existential assumptions.
+	    \end{minipage}
+	    \begin{minipage}[t][0.05\textheight][t]{\textwidth}
+	        \textbf{Keywords}: empty domain of discourse, inclusive logic, existence assumptions in logic, free logic, semantics of free logics, application of free logic
+	    \end{minipage}
+	    
+	\end{figure}
+	\clearpage
+	\vspace*{\fill}
+	\noindent Chcel by som sa poďakovať vedúcemu práce, Mgr. Karlovi Šebelovi, Ph.D., za cenné rady a konštruktívnu kritiku, bez ktorých by táto práca nikdy neexistovala. %Ďakujem aj svojim blízkym za ich neskonalú trpezlivosť a zhovievavosť.
+	
+	\vspace*{7cm}
+	\clearpage
+	
+	\tableofcontents 
+	\pagebreak
+	\listofdiagrams 
+	\listofusudoks 
+	\listoftables
+
+	\pagebreak
+	
+
+\section{Prázdna doména v predikátovej logike prvého rádu}
+
+\subsection{Úvod}
+%{\LARGE\textbf{[OBECNE: Hrubými písmenami zvýraznený text bude buď vymazaný, alebo revidovaný]}}\\\noindent
+Pri pohľade na logické texty z histórie si nemôžeme nevšimnúť, akým vývojom logika prešla. Jej pôvodná forma, nie veľmi vzdialená od prirodzeného jazyka, sa postupom času úplne zmenila. Vrchol jej transformácie nastal v dvadsiatom storočí. Logika v ňom získala svoju najaktuálnejšiu, omnoho formálnejšiu podobu, a osvojila si vlastné umelé jazyky a kalkuly. S touto premenou -- smerom k matematizácii a sformalizovaniu -- pribudli
+%\textbf{, našťastie pre filozofov,} 
+nové problémy filozofie logiky \parencite[13--14]{peregrin_filosofie_2017}. Jedným z nich je aj otázka prázdnej domény diskurzu.\par
+Od formálneho systému často očakávame určitú neutralitu v otázke ontologických požiadaviek. Napriek tomu predikátová logika prvého rádu skrýva v svojej sémantike jeden zaujímavý nárok. Doména diskurzu musí byť neprázdna. Alebo: musí existovať aspoň jedno indivíduum. Táto podmienka sa nám môže zdať ako neoprávnená, veď počet či existenciu objektov v univerze by sme zaiste chceli skôr odhaliť než vopred postulovať. Podobnú výčitku voči čistote takéhoto systému prezentuje aj Russell v \textit{Introduction to Mathematical Philosophy}, keď píše: 
+\begin{center}
+\begin{quote}
+Určiť, či existuje vo svete \textit{n} indivíduí, môžeme len empirickým pozorovaním. Medzi \uv{možnými} svetmi, v Leibnizovskom zmysle, nájdeme svety s jedným, dvoma, troma, \dots indivíduami. Nezdá sa, že by dokonca existovala akákoľvek logická nutnosť, prečo by malo existovať čo i len jediné indivíduum -- prečo by vlastne mal vôbec existovať svet. [\dots] Základné propozície v \textit{Principia Mathematica} povoľujú záver, podľa ktorého existuje najmenej jedno indivíduum. Teraz to však považujem za chybu logickej čistoty.\footnote{V origináli: \uv{We are left to empirical observation to determine whether there are as many as \textit{n} individuals in the world. Among "possible" worlds, in the Leibnizian sense, there will be worlds having one, two, three, . . . individuals. There does not even seem any logical necessity why there should be even one individual -- why, in fact, there should be any world at all. [\dots]   The primitive propositions in \textit{Principia Mathematica} are such as to allow the inference that at least one individual exists. But I now view this as a defect in logical purity.}}\parencite[vlastný preklad,][203]{russell_introduction_1993}
+\end{quote}
+\end{center}
+Cieľom tejto práce bude analyzovať práve túto požiadavku na zaplnenosť domény diskurzu, a ukázať, čo sa stane s klasickou logikou, ak sa ju pokúsime od nej očistiť.\par
+V prvej časti práce sa budeme venovať problému prázdnej domény. Uvedieme najprv gramatické pravidlá jazyka predikátovej logiky, aby sme vzápätí mohli objasniť základné sémantické koncepty, ktoré sú potrebné pre úplné uvedenie do problematiky. Potom sa budeme venovať priamo podmienke neprázdnosti domény diskurzu. Ukážeme si, prečo vôbec v predikátovej logike je, a čo by jej nedodržanie spôsobovalo. Popri tom taktiež vymenujeme niekoľko významných filozofov a logikov, ktorí sa tomuto problému venovali alebo dokonca vybudovali alternatívne systémy bez podobnej podmienky. V druhej časti si predstavíme voľné logiky (angl. \textit{free logics}), ktoré sú jedným zo spôsobov, ako robiť logiku bez predpokladu neprázdnosti univerza. Predstavíme rôzne druhy voľných logík, a ukážeme v čom sa líšia. Na konci práce sa budeme venovať aj možnej aplikácii voľných logík.
+
+\subsection{Syntax predikátovej logiky prvého rádu}
+
+%Symboly
+Na to, aby sme mohli hovoriť o význame v predikátovej logike a jeho vzťahu s tým, čo sa nazýva doména diskurzu, potrebujeme najskôr nejaké tvrdenia. Tie sa skladajú z ešte základnejších častí, ktoré majú vlastné definície a pravidlá spájania. Je teda potrebné prv, než sa budeme bližšie venovať sémantike predikátovej logiky, krátko pojednať o gramatike alebo syntaxi. V tejto časti si uvedieme základné prvky jazyka predikátovej logiky, z ktorých pomocou pravidiel môžeme tvoriť formuly.\par
+Jazyk predikátovej logiky $L$ sa skladá z logických a mimologických symbolov. Medzi logické symboly patria logické spojky, operátory, a kvantifikátory. Najbežnejšie sa uvažujú spojky konjunkcie ($\land$), disjunkcie ($\lor$), implikácie ($\Rightarrow$), niekedy aj ekvivalencie ($\iff$) a unárny operátor negácie ($\neg$). Kvantifikátory v jazyku $L$ sú dva -- existenčný ($\exists$) a univerzálny ($\forall$). Všetky tieto symboly slúžia na tvorenie ďalších, komplexnejších formúl z už existujúcich formúl; to, ako vyzerajú základné, atomické formuly, si uvedieme nižšie.\par 
+K mimologickým symbolom náležia predikátové a funkčné symboly, ako aj indivíduové premenné a konštanty, a pomocné symboly. Predikátové a funkčné symboly označujeme prevažne veľkými písmenami (i keď funkcie sa niekedy označujú aj malými písmenami), konštanty značíme spravidla malými písmenami zo začiatku abecedy (napríklad $a$, $b$), premenné z konca (napríklad $x$, $y$). Pomocné symboly slúžia na ujasnenie zápisu formúl, patria medzi ne napríklad rôzne druhy zátvoriek.\par
+Funkčné a predikátové symboly majú takzvanú aritu alebo $n$-aritu, kde $n$ je prirodzené číslo. Arita označuje počet prvkov, na ktoré sa daný symbol aplikuje, a niekedy sa značí ako horný index pri symbole. V prípade, že máme binárny (2-árny) funkčný symbol $F$, na jeho aplikáciu potrebujeme dva ďalšie prvky, napríklad indivíduové konštanty $a$, $b$. Aplikáciu tohto funkčného symbolu zapíšeme ako $F(a, b)$. Bi- a viacárne predikáty tiež nazývame relácie. Často sa uvažuje aj o $0$-árnych funkciách a predikátoch. $0$-árne funkcie -- funkcie bez argumentov -- označujú konštanty. Predikáty s aritou $0$ zastupujú samostatne stojace vety s nedôležitou vnútornou štruktúrou. Nazývame ich výrokové symboly (angl. \textit{sentence letters}). O jazyku predikátovej logiky $L$ platí, že síce nemusí obsahovať nijaký funkčný symbol, no nevyhnutne musí zahŕňať aspoň jeden predikát \parencites[47, 53]{mendelson_introduction_2015}[301]{peregrin_filosofie_2017}[34]{raclavsky_uvod_2015}{shapiro_classical_2022}[137--138]{svejdar_logika_2002}.\par 
+
+%Termy
+Ďalším dôležitým syntaktickým pojmom predikátovej logiky je term. Napriek tomu, že významom symbolov sa budeme venovať až v časti o sémantike, môžeme si pre lepšiu uchopiteľnosť tohto pojmu pomôcť tým, ak termy budeme intuitívne chápať ako znaky označujúce jednotlivé objekty univerza. Sú to teda akési mená vecí. K termom patria indivíduové premenné a konštanty. Líšia sa od seba svojou mierou konkrétnosti označenia. Konštanty označujú určité indivíduum, kým premenné označujú \uv{ľubovoľné, ale nešpecifikované indivíduum} \parencites[18]{raclavsky_uvod_2015}{shapiro_classical_2022}.\par
+%termy funkcie
+V prípade, že v jazyku $L$ máme aj funkčný symbol, k termom patrí aj jeho aplikácia na iné termy: $F$($t_1$, ..., $t_n$), kde $F$ je $n$-árny funkčný symbol jazyka $L$, a $t_1$ až $t_n$ sú termy. Pokiaľ sa držíme našej predstavy, že termy sú mená vecí, nemusí byť celkom jasné, ako dokážeme niečo pomenovať pomocou funkcie. Pre ilustráciu toho, ako to funguje, môžeme použiť $1$-árnu funkciu $Otec$ definovanú na množine ľudí ($Otec: Ľudia \rightarrow Ľudia$), ktorá ľubovoľnému človeku $x$ priradí konkrétne indivíduum, jeho otca. Hodnota $Otec(x)$ je teda \uv{menom} tohto indivídua.
+Okrem indivíduových konštánt, premenných a aplikácií funkčných symbolov nič iné v jazyku $L$ termom nie je \parencites[47]{mendelson_introduction_2015}[35]{raclavsky_uvod_2015}[138]{svejdar_logika_2002}.\par
+
+%Formuly 
+V momente, keď náš jazyk už obsahuje mená objektov, môžeme ich začať používať vo formulách. Najjednoduchšie možné formuly sú atomické formuly, ktoré sa skladajú z nejakého $n$-árneho predikátového symbolu $P$ aplikovaného na $n$ symbolov termov $t_1, \dots, t_n$, čo zapisujeme ako: $P(t_1, \dots, t_n)$. Aplikáciou logických operátorov na jednotlivé atomické formuly dostávame zložené formuly. Množinu všetkých formúl jazyka $L$ môžeme potom vymedziť ako najmenšiu množinu výrazov, ktorá spĺňa podmienky, že každá atomická formula a každá formula tvaru $(\neg\varphi)$, $(\varphi \land \psi)$, $(\varphi \Rightarrow \psi)$, $(\varphi \lor \psi)$, $(\forall\varphi)$ alebo $(\exists \varphi)$ sú formulami jazyka $L$ \parencites[35]{raclavsky_uvod_2015}{shapiro_classical_2022}[138]{svejdar_logika_2002}.\par
+
+%Volne a viazané premenné
+Posledným dôležitým prvkom gramatiky predikátovej logiky je viazanosť premenných. Výskyt premenných vo formulách môže byť dvojaký. Každý výskyt premennej v akejkoľvek atomickej formule je voľný. Taktiež platí, že pokiaľ má premenná voľný výskyt v dvoch atomických formulách $\varphi$, $\psi$, má voľný výskyt aj v zloženej formule $\varphi\star\psi$, kde $\star$ reprezentuje nejaký vyššie spomenutý binárny konektor. Ak má premenná $x$ voľný výskyt vo $\varphi$, tak má voľný výskyt aj v $\neg\varphi$. Pokiaľ má $x$ výskyt v $\forall x\varphi$ alebo $\exists x\varphi$, tak je viazaný. Taktiež platí, že ak máme dve rôzne premenné $x$, $y$, a $y$ je vo $\varphi$ voľne, tak je voľne aj vo $\forall x\varphi$ a $\exists x\varphi$. Formulu obsahujúcu premenné, ktoré sú všetky viazané, nazývame uzavretá, ináč sa volá otvorená \parencites[301]{peregrin_filosofie_2017}[139]{svejdar_logika_2002}.\par 
+O viazanosti premenných môžeme uvažovať aj pomocou dosahu (angl. \textit{scope}) kvantifikátora. V prípade, že premenná je v jeho dosahu, má viazaný výskyt. Ako názorný príklad viazanosti nám poslúži formula zo strany 39 z učebnice \textit{Úvod do logiky: Klasická predikátová logika} od Jiřího Raclavského: $\exists x ( P(x) \land \exists y Q(x))$. Dosah prvého existenčného kvantifikátora je celá väčšia zátvorka, a teda výskyt premennej $x$ je v tejto formule viazaný. Druhý existenčný kvantifikátor neviaže žiadnu premennú, pretože premenná $y$ nemá nijaký výskyt v atomickej formule $Q(x)$, a teda ani viazaný, ani voľný \parencite[39]{raclavsky_uvod_2015}.\par
+%Záver gramatiky
+V tejto časti sme si zadefinovali základné gramatické prvky a syntaktické pravidlá jazyka predikátovej logiky $L$. Ukázali sme si, ako správne vytvoriť formuly takéhoto jazyka. Avšak doposiaľ nevieme, čo tieto formuly znamenajú. Správne utvorené formuly totiž nemajú význam samy o sebe, ale iba pri zvolenej interpretácii, a práve tomuto sa budeme venovať v nasledujúcom oddiele.
+
+
+\subsection{Sémantika predikátovej logiky prvého rádu} 
+\label{sem}
+%Úvod
+Sémantika výrokovej logiky je založená na priradení pravdivostnej hodnoty každému elementárnemu výroku. Pravdivostná hodnota zloženého výroku sa potom jednoducho určí vypočítaním pomocou definície logických konektorov. V predikátovej logike to však \uv{takto jednoduché} nie je. Jazyk tejto logiky, tak ako sme si ho definovali vyššie, totiž obsahuje aj také symboly, ktoré obdobný postup znemožňujú \parencites[35--36]{peregrin_logika_2004}[40]{raclavsky_uvod_2015}. Veď napríklad formula $P(a) \land N(a)$ je určite nepravdivá,\footnote{Nakoľko sme doposiaľ nedefinovali, ako sa určuje pravdivosť formúl, je treba dodať, že táto formula je pravdivá práve vtedy, keď sú pravdivé obe atomické formuly $P(a)$ a $N(a)$, čiže keď má objekt označený termom $a$ práve obe vlastnosti označené predikátmi $P$, $N$. Nakoniec podobnú definíciu pravdy podáme aj v tejto časti.} ak by term $a$ označoval číslo 2 a predikát $P$ by znamenal \uv{byť párny}, a $N$ zas \uv{byť nepárny}; a zároveň rovnaká formula by bola pravdivá, pokiaľ by sme pomocou termu $a$ označovali Sokrata, a predikát $P$ by označoval vlastnosť \uv{byť filozof} a predikát $N$ \uv{byť učiteľom Platóna}. Vidíme teda, že vďaka predikátom, funkčným symbolom, ale tiež kvantifikátorom je potrebné k sémantike predikátovej logiky pristupovať ináč ako k sémantike výrokovej logiky.
+%Štruktúra
+\subsubsection{Štruktúra $\langle$D, r$\rangle$}
+Aby sme vyššie spomenutú komplikáciu vyriešili, je sémantika jazyka predikátovej logiky $L$ založená na koncepte štruktúry – dvojice $\langle D, r\rangle$. Neprázdna množina $D$ sa nazýva doména alebo univerzum diskurzu.\footnote{Tento objekt a jeho funkcie v logike budú v našom centre pozornosti v ďalších partiách tejto časti práce.} Zjednodušene môžeme povedať, že sa jedná o súhrn objektov, o ktorých chceme hovoriť \parencites[96--97]{peregrin_filosofie_2017}. Funkcia $r$ sa nazýva realizácia (niekedy aj interpretácia) jazyka $L$ pre doménu $D$. Jej úlohou je priradiť symbolom termov, funkcií a predikátov ich realizácie – prvky, funkcie, podmnožiny a relácie v $D$. Ak sú $c$, $F$, $P$ symboly v $L$ označujúce konštantu, $n$-árny funkčný symbol, a $n$-árnu reláciu, tak o ich realizácií platí:
+	\begin{alignat}{3}
+		c \in &L,&&\quad r(c) \in D \label{r(c)} \\
+		F \in &L,&&\quad r(F): D^n \rightarrow D \label{r(F)} \\
+		P \in &L,&&\quad r(P) \subseteq D^n, n\geq1 \label{r(P)} \\
+		P^0 \in &L,&&\quad r(P^0) \in \{0, 1\} \label{r(P0)}
+	\end{alignat}
+%Realizacia r
+Realizácia symbolu konštanty je teda prvok domény diskurzu (viď \ref{r(c)}), realizácia funkčného symbolu je $n$-árna operácia na množine $D$ (viď \ref{r(F)}), a symbol $n$-árnej relácie sa zobrazí na $n$-árnu reláciu na množine $D$ (viď \ref{r(P)}). V prípade, že náš jazyk obsahuje aj $0$-árne predikátové symboly, ich realizáciou bude pravdivostná hodnota, ako vidíme v \ref{r(P0)} \parencite{shapiro_classical_2022}.\par 
+V prípade, že je jazyk $L$ konečný, obsahuje konečný počet predikátových, funkčných, a indivíduových symbolov, štruktúru \textbf{D} často zapisujeme nie ako dvojicu nosnej množiny $D$ a funkcie $r$ $\langle$D, r$\rangle$, ale pomocou nosnej množiny a jednotlivých realizácií mimologických symbolov, napríklad $\langle\mathbb{N}, +, 0, \geq\rangle$ \parencites[81--82]{bostock_intermediate_1997}[54]{mendelson_introduction_2015}[40--44]{raclavsky_uvod_2015}{shapiro_classical_2022}[140]{svejdar_logika_2002}. \par Na základe doteraz uvedených definícií vieme, ako priraďujeme konštantám, funkciám a predikátom ich obrazy súvisiace s doménou diskurzu. Náš jazyk avšak povoľuje nielen indivíduové konštanty, ale aj premenné. Ako teda budeme postupovať v prípade, že naša formula obsahuje práve tie? Pre prácu s premennými definujeme ďalšiu funkciu -- ohodnotenie $e: \text{Var} \rightarrow D$.\par 
+
+%Ohodnotenie e 
+Ohodnotenie premenných v štruktúre \textbf{D} pre jazyk $L$ je funkcia z množiny premenných $\text{Var}$ do nosnej množiny $D$ štruktúry \textbf{D}. Výraz $e(x/a)$ potom označuje takú funkciu, ktorá premennej $x$ z množiny $\text{Var}$ priradí hodnotu $a$ z množiny $D$, no vo všetkých ostatných priradeniach sa zhoduje s ohodnotením $e$. Hodnota termov obsahujúcich premenné v štruktúre \textbf{D} pri ohodnotení $e$ je potom určená predpismi:
+	\begin{alignat}{3}
+		t^\mathbf{D}[e] &&=& e(t) \label{e(t)} \\
+		F(t_1, \dots, t_n)^\mathbf{D}[e] &&=& r(F)(t_{1}^{\mathbf{D}}[e], \dots, t_{n}^{\mathbf{D}}[e]) \label{e(F)}
+	\end{alignat}
+Výrazy \ref{e(t)} a \ref{e(F)} dopĺňajú výraz \ref{r(c)}, keďže hovoria o tom, čo má byť priradené termom, ktoré nie sú konštantami, v doméne $D$. Navyše, \ref{e(F)} vyjadruje, ako postupovať v prípade, že chceme interpretovať aplikovaný funkčný symbol: Samotný funkčný symbol $F$ najprv realizujeme pomocou funkcie $r$, dostaneme funkciu $r(F)$ z $D^n$ do $D$. Túto funkciu potom aplikujeme na jednotlivé interpretácie termov podľa \ref{e(t)}.\par
+Po spojení oboch definícií týkajúcich sa interpretácie termov (viď \ref{r(c)} a \ref{e(t)}) platí, že v prípade, že je term $t$ konštanta, jeho interpretácia bude určená funkciou $r$, $t^\mathbf{D}[e] = r(t)$. Naopak, ak je $t$ premenná, jeho interpretácia je daná funkciou $e$, $t^\mathbf{D}[e] = e(t)$ \parencites[303]{peregrin_filosofie_2017}[44]{raclavsky_uvod_2015}{shapiro_classical_2022}[142]{svejdar_logika_2002}.\par 
+Ako vidíme, pomocou týchto definícií sa nám podarilo \uv{premietnuť} formuly jazyka $L$ do štruktúry \textbf{D}, a dostali sme sa o kúsok bližšie k tomu, aby sme si definovali ďalšie dôležité sémantické pojmy -- spĺňanie a pravdivosť formúl.\footnote{Pre ilustráciu sa môžeme na chvíľu vrátiť, k nášmu príkladu z úvodu tejto časti. Teraz už vidíme, že pri druhej interpretácii sme vlastne intuitívne využili to, čo sme neskôr definovali: Štruktúru $\langle \textit{Doposiaľ Existujúci Ľudia} = \{\dots, \textit{Sokrates}, \dots \}, \text{\uv{byť učiteľom Platóna}}, \text{\uv{byť filozof}}\rangle$. Zdá sa teda, že ide o veľmi prirodzený sémantický koncept.}
+
+
+%Splňovanie formule	
+\subsubsection{Spĺňanie formúl}
+
+Spĺňanie formuly $\varphi$ je ternárny vzťah medzi formulou $\varphi$, štruktúrou \textbf{D} a ohodnotením premenných $e$. Zapisujeme ho $\mathbf{D}\models\varphi[e]$, a čítame ako: Formula $\varphi$ je splnená ohodnotením $e$ v štruktúre \textbf{D}. Ak existuje aspoň jedno také ohodnotenie $e$, pre ktoré platí $\mathbf{D}\models\varphi[e]$, vravíme, že formula $\varphi$ je splniteľná v štruktúre \textbf{D}. Tvrdenie o spĺňaní formuly je vlastne analogické k tvrdeniu: \uv{$\varphi$ je po interpretácii v štruktúre \textbf{D} pomocou ohodnotenia $e$ pravda}. Jeho definícia postupuje od najjednoduchších prípadov -- spĺňania atomickej formuly -- po zložitejšie. Výrazy \ref{model(neg)} až \ref{model(forAll)} prevádzajú otázku svojho spĺňania rekurzívne na jednoduchšie formuly, čiže nakoniec na spĺňanie základnej atomickej formuly \ref{model(Pt)}. Štruktúra, v ktorej je formula $\varphi$ splnená ohodnotením $e$, sa tiež nazýva modelom formuly \parencites[303]{peregrin_filosofie_2017}[50,52]{raclavsky_uvod_2015}{shapiro_classical_2022}[142--143]{svejdar_logika_2002}.\par
+Atomická formula, zložená z jedného $n$-árneho ($n>0$) predikátového symbolu aplikovaného na $n$ termov, je splnená v štruktúre \textbf{D} ohodnotením $e$ práve vtedy, keď usporiadaná $n$-tica jednotlivých realizácií termov -- podľa výrazov \ref{r(c)}, \ref{e(t)} alebo \ref{e(F)} -- patrí do realizácie daného predikátového symbolu $r(P)$. Formálne túto definíciu môžeme zapísať nasledovne:
+		\begin{equation}
+			\mathbf{D} \models P(t_1,…, t_n)[e]	 \iff 	\langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \in r(P)		\label{model(Pt)}
+		\end{equation}
+Spĺňanie atomickej formuly v štruktúre nám teraz poslúži pri definícii spĺňania aj iných, komplexnejších formúl. Ich definície sa totiž odvolávajú na spĺňanie jednoduchších formúl v rovnakej štruktúre a pri rovnakom ohodnotení. Splniteľnosť všetkých formúl je teda nakoniec vyvoditeľná zo splniteľnosti atomických formúl. Definície splniteľnosti komplexných formúl sú nasledovné:
+		\begin{alignat}{3}
+			\mathbf{D} &\models&& (\neg\varphi)[e] 	 \iff	\mathbf{D} \not\models \varphi[e] \label{model(neg)} \\
+			\mathbf{D} &\models&& (\varphi \Rightarrow \psi)[e] \iff \mathbf{D} \not\models \varphi[e] \quad \text{alebo} \quad\mathbf{D} \models \psi[e] \label{model(impl)}\\
+			\mathbf{D} &\models&& (\varphi \land \psi)[e] \iff \mathbf{D} \models \varphi[e] \quad \text{a} \quad\mathbf{D} \models \psi[e] \label{model(a)}\\
+			\mathbf{D} &\models&& (\varphi \lor \psi)[e] \iff \mathbf{D} \models \varphi[e] \quad \text{alebo} \quad\mathbf{D} \models \psi[e] \label{model(alebo)}\\
+			\mathbf{D} &\models&& (\exists x\varphi)[e] \iff \exists a \in D, (\mathbf{D} \models \varphi[e(x/a)]) \label{model(exists)} \\
+			\mathbf{D} &\models&& (\forall x\varphi)[e] \iff \forall a \in D, (\mathbf{D} \models \varphi[e(x/a)])	\label{model(forAll)}
+		\end{alignat}
+
+\noindent Výrazy \ref{model(neg)}--\ref{model(forAll)} vyjadrujú, ako sa správajú logické symboly jazyka $L$ vzhľadom ku vzťahu spĺňania jednotlivých formúl, z ktorých sa skladajú zložené tvrdenia. 
+%komplexne
+Pre konjunkciu (viď \ref{model(a)}) platí, že je splnená ohodnotením $e$ v \textbf{D} práve vtedy, keď sú splnené jej obe časti, disjunkcia (viď \ref{model(alebo)}) je splnená, ak je splnená aspoň jedna z jej častí. Formula $\vartheta$ v tvare implikácie $\varphi \Rightarrow \psi$ je splnená v \textbf{D} pri $e$, keď nie je splnená pri tom istom ohodnotení a v tej istej štruktúre $\varphi$ alebo je splnená $\psi$. Formálne to vidíme zapísané vo výraze \ref{model(impl)}. Negácia formule (definícia \ref{model(neg)}) je splnená práve vtedy, keď nie je splnená samotná formula.\par
+%kvantifikatory
+Výrazy \ref{model(exists)}, \ref{model(forAll)} sú definíciami spĺňania formúl, ktoré obsahujú univerzálny alebo existenčný kvantifikátor. K týmto definíciám treba podotknúť, že kvantifikátory z pravej časti výroku sú iného druhu než tie z ľavej časti. Tie napravo nie sú súčasťou vyššie definovaného formálneho jazyka $L$. Sú to iba jazykové skratky za výrazy \uv{Pre aspoň jeden prvok $a$ v $D$ platí, že\dots} a \uv{Pre všetky prvky $a$ v $D$ platí, že\dots}. Môžeme ešte pripomenúť, že $e(x/a)$ označuje také zobrazenie, ktoré priradí premennej $x$, v tomto prípade viazanej, práve prvok $a$ z $D$, a ináč sa správa ako $e$.\par
+Formula s existenčným kvantifikátorom je teda splnená, ak za viazané výskyty kvantifikovanej premennej dosadíme nejaký existujúci prvok $a$ z domény diskurzu, a takto upravená formula bude splnená daným ohodnotením $e(x/a)$ v štruktúre \textbf{D}. Formula so všeobecným kvantifikátorom je zas splnená, ak pre všetky prvky domény diskurzu $a$ platí, že po ich dosadení za viazanú premennú $x$ dostaneme formulu splnenú v \textbf{D} \parencites[49--50]{raclavsky_uvod_2015}{shapiro_classical_2022}[143]{svejdar_logika_2002}.\par 
+
+Tak, ako sme uviedli v úvode tejto časti, spĺňanie je vlastne určitá najjednoduchšia forma pravdivosti. Ak je formula $\varphi$ splnená ohodnotením $e$ v štruktúre \textbf{D}, hovoríme tiež, že je pravdivá pri tomto ohodnotení. Avšak v logike existujú tvrdenia, ktoré nezávisia na tom, aké ohodnotenie premenných si zvolíme, ba dokonca aj také, ktoré nezávisia ani na štruktúre. Týmto dvom silnejším formám pravdivosti sa budeme venovať v ďalšej časti.
+
+\subsubsection{Pravdivosť formúl}
+\label{subsubsec:truth}
+Pokiaľ máme formulu, ktorá je splnená v štruktúre \textbf{D} ľubovoľným ohodnotením $e$, hovoríme, že daná formula je pravdivá alebo platí v tejto štruktúre. Formálne to zapisujeme pomocou rovnakého symbolu ako vzťah spĺňania formúl: $\textbf{D}\models\varphi$. Ako vidíme, platnosť formuly v štruktúre už nie je ternárny vzťah ako splniteľnosť formuly v štruktúre ohodnotením, ale binárny -- je iba medzi štruktúrou a formulou. Definícia pravdivosti v štruktúre je potom nasledovná:
+\begin{alignat}{3}
+	\mathbf{D}\models\varphi \iff \forall e (\mathbf{D}\models\varphi[e]) \label{trueinD}
+\end{alignat}
+Ako príklad otvorenej pravdivej formuly v štruktúre $\langle\mathbb{N}, +, 0, \geq\rangle$ si môžeme uviesť vetu  $\varphi=(x\geq0)$. Akékoľvek priradenie premennej $x$ k prvku $n$ z $\mathbb{N}$ urobí z $\varphi$ pravdivú vetu. Môžeme teda napísať: $\langle\mathbb{N}, +, 0, \geq\rangle\models(x\geq0)$. O pravdivosti uzavretých formúl v štruktúre platí, že v prípade, ak jedno ohodnotenie premenných $e$ spĺňa uzavretú formulu, spĺňajú túto formulu aj všetky ostatné ohodnotenia:
+\begin{alignat}{3}
+	(\text{$\varphi$ je uzavretá a zároveň } \exists e(\mathbf{D}\models\varphi[e])) \Rightarrow \mathbf{D}\models\varphi \label{trueinDSent}
+\end{alignat}
+Príklad uzavretej formuly, ktorá je pravdivá v rovnakej štruktúre, je univerzálny uzáver formuly $\varphi$, $\forall x \varphi$, resp. $\forall x (x\geq0)$ \parencites{shapiro_classical_2022}[144]{svejdar_logika_2002}.\par
+
+Formuly, ktoré sú platné nezávisle od štruktúry, resp. v každej štruktúre, a nezávisle od ohodnotenia premenných, nazývame logicky platnými či pravdivými. Zapisujeme ich: $\models\varphi$. Logicky platnou formulou je napríklad $\forall x P(x) \lor \neg \forall x P(x)$. Táto formula je aj tautológiou predikátovej logiky, keďže sa dá získať substitúciou predikátových formúl za $p$ v tautológii výrokovej logiky $p \lor \neg p$ \parencites[51--52, 55]{raclavsky_uvod_2015}[147, 157]{svejdar_logika_2002}.
+
+%PRAZDNA DOMENA
+
+\subsection{Prázdna doména}
+
+%UVOD
+V tejto časti sa budeme venovať logike, ktorú Quine nazval inkluzívnou \parencites[177]{quine_quantification_1954}. Na rozdiel od klasickej, exkluzívnej logiky inkluzívna logika povoľuje, aby doménou diskurzu bola aj prázdna množina. V inkluzívnej logike teda univerzum diskurzu nemusí obsahovať nijaké indivíduum. Odstránenie podmienky neprázdnosti univerza má však dôsledky pre celú sémantiku predikátovej logiky. Rozšírenie domén diskurzu na všetky možné množiny (vrátane prázdnej) ovplyvňuje realizácie symbolov, množiny tautológií, pravdivých formúl a vlastne celú logiku. Skôr, než si predostrieme argumenty, prečo vôbec túto podmienku meniť, sa pozrieme na to, ako vyzerá sémantika v prázdnej štruktúre \textbf{E}.
+
+%PRÁZDNA ŠTRUKTÚRA
+\subsubsection{Prázdna štruktúra \textbf{E}}
+Prázdnou štruktúrou budeme nazývať takú štruktúru, ktorá má nosnú množinu prázdnu; budeme ju označovať $\textbf{E}$: $\textbf{E} = \langle\emptyset,r\rangle$. V prípade, že sa rozhodneme na ňu aplikovať klasické zákony sémantiky, dostaneme sa k viacerým komplikáciám. Ak dosadíme do definícií realizácií symbolov miesto nosnej množiny $D$ priamo prázdnu množinu, dostávame nasledujúce definície:
+\begin{alignat}{3}
+		c \in L,\quad &r(c) \in&& \emptyset \label{Er(c)} \\
+		F \in L,\quad &r(F):&& \emptyset^n \rightarrow \emptyset  \text{, čiže platí: } r(F) = \emptyset \label{Er(F)} \\
+		P \in L,\quad &r(P)\subseteq&& \emptyset^n \text{, čiže platí: } r(P) \subseteq \emptyset \text{ a teda: } r(P) = \emptyset \label{Er(P)}  \\
+		P^0 \in L,\quad &r(P^0) \in&& \{0, 1\} \label{Er(P0)}
+\end{alignat}
+%Realizácia konštánt
+
+\noindent Keďže prázdna množina nemá nijaké prvky, jazyk inkluzívnej logiky nemôže obsahovať indivíduové konštanty \parencites[170]{amer}[147]{mendelson_introduction_2015}. Ich realizácie by totiž museli byť prvkami práve prázdnej množiny (viď \ref{Er(c)}). Logika, ktorá povoľuje aj také indivíduové konštanty, ktoré nič neoznačujú, a teda nemajú realizáciu, je voľná logika. Inkluzívna logika však nemusí byť nutne aj voľná,\footnote{Podobné tvrdenie platí aj naopak: Voľná logika nemusí byť nutne inkluzívna. Logika, ktorá je aj voľná, aj inkluzívna, sa nazýva univerzálne voľná logika (angl. \textit{universally free logic}) \parencites[8]{meyerlambert}[1025]{Nolt2007}.} pretože jazyk predikátovej logiky nemusí obsahovať indivíduové konštanty \parencites{sep-logic-free}[3]{williamson_note_1999}.\par
+%Realizácia funkčných symbolov
+
+I keď sú všetky realizované totožne, jazyk inkluzívnej logiky obsahuje $n$-árne ($n > 0$) predikáty a funkcie. Taktiež zahŕňa aj 0-árne predikáty -- výrokové premenné. Realizácia predikátov arity $n > 0$ je podmnožina prázdnej množiny, a teda samotná prázdna množina (viď \ref{Er(P)}). Funkčný symbol $F$ má ako svoju realizáciu prázdnu množinu usporiadaných $(n+1)$-tíc (viď \ref{Er(F)}). V prípade definície realizácie výrokových premenných (predikátov s nulovou aritou) nedochádza k nijakej zmene, aj v inkluzívnej logike je ich realizáciou priamo pravdivostná hodnota.\par 
+%e:VAR->EMPTY a premenné
+
+Ako sa to má v našom jazyku s indivíduovými premennými? Pri interpretácii premenných sme používali funkciu $e: \text{Var} \rightarrow D$. V prípade, že je D prázdna množina, dostávame: $e: \text{Var} \rightarrow \emptyset$. Nakoľko však definícia funkcií vyžaduje, aby pre každý vzor existoval obraz, musí platiť, že tento obraz je prvkom prázdnej množiny. Prázdna množina však nijaké prvky nemá. Preto v prípade prázdnej domény neexistuje nijaké priradenie premenných objektom $e$.\par 
+Mohlo by sa zdať, že, ak neexistuje $e$, inkluzívna logika nemôže obsahovať nijaké premenné. Ak pripustíme takýto záver, zostane nám jazyk, ktorého vyjadrovacia schopnosť je značne oklieštená oproti pôvodnému jazyku klasickej predikátovej logiky. V skutočnosti sa však premenných nemusíme tak rýchlo a ľahko vzdávať. Jazyk inkluzívnej logiky môže obsahovať premenné aj napriek neexistencii funkcie $e$. To, ako sa budú interpretovať formuly, ktoré obsahujú premenné, ukážeme v nasledujúcej časti. No už teraz môžeme načrtnúť, že bežne sa uvádzajú dva varianty.\par
+Ak, tak ako Quine (implicitne) navrhuje, dovolíme, aby všetky formuly inkluzívnej logiky boli výhradne uzavreté, test pravdivosti v \textbf{E} sa zredukuje na dodržiavanie jednoduchej procedúry, ktorú definuje sám Quine \parencites[197]{hailperin_quantification_1953}[177]{quine_quantification_1954}. Druhý spôsob povoľuje aj otvorené formuly, ktoré sú považované za ekvivalentné so svojimi univerzálnymi uzávermi. Univerzálne uzávery formúl sú ale uzavreté formuly, a tak na ne môžeme znova aplikovať Quineov postup \parencites[78]{leblanc_open_1969}.
+%Spĺňanie formul v E
+\subsubsection{Spĺňanie formúl a pravdivosť v \textbf{E}}
+
+Nakoľko sa všetko spĺňanie komplexnejších formúl odvoláva na spĺňanie základnej atomickej formuly, stačí, keď sa pozrieme iba na jej definíciu spĺňania. V \ref{model(Pt)} sme ho definovali pomocou usporiadanej $n$-tice realizácie termov, ktorá má patriť realizácii $n$-árneho predikátu $r(P)$. Ako sme si však ukázali, termy v inkluzívnej logike nemajú nijakú realizáciu, pretože neexistuje nijaké $e$ a indivíduové konštanty sú v jazyku inkluzívnej logiky, pokiaľ nie je voľná, zakázané. Navyše ľubovoľný $n$-árny, kde $n > 0$, predikát je realizovaný ako prázdna množina, čiže beztak neobsahuje nijaké $n$-tice prvkov, hoc by aj existovali. Z tohto dôvodu nemôže byť nijaká atomická formula v \textbf{E} splnená. Ternárny vzťah $\textbf{E}\models\varphi[e]$ v prázdnej štruktúre preto pôsobí primitívne.\par
+
+%Pravdivosť formúl v E
+Pozrime sa teraz na binárny vzťah pravdivosti formúl v štruktúre \textbf{E}. Podľa \ref{trueinD} je $\varphi$ pravdivá v \textbf{D} práve vtedy, ak je spĺňaná každým ohodnotením $e$. Keďže však v prípade štruktúry \textbf{E} neexistuje nijaké ohodnotenie $e$, platí, že $\varphi$ je skutočne spĺňaná každým ohodnotením, a je teda pravdivá v \textbf{E}. Sem však spadajú aj také formuly, ktoré by intuitívne mali byť v \textbf{E} nepravdivé, pretože konštatujú existenciu objektov (napríklad $\exists x (x = x)$). Ak sa zamyslíme aj nad tým, že nepravdivosť v štruktúre by mohla byť definovaná ako nespĺňanie nijakým ohodnotením $e$, zistíme, že všetky formuly sú zároveň pravdivé, a zároveň nepravdivé \parencites[4]{williamson_note_1999}! Takýto záver, i keď k nemu klasická sémantika navádza, stiera akúkoľvek rozličnosť medzi pravdivostnými hodnotami, a je teda určite nežiadaný.\par
+Spôsob, ktorým sa dá z tejto prekérnej situácie dostať von, je úprava funkcie $e$, ktorú navrhuje Williamson: $e_\varphi$ je funkcia priradzujúca voľným premenným vyskytujúcim sa vo $\varphi$ prvky domény diskurzu. Spĺňanie formúl je potom definované obdobne, ako sme ho definovali vyššie pomocou $e$ v definíciách \ref{model(Pt)}--\ref{model(forAll)}, akurát nahradíme pôvodné $e$ novým $e_\varphi$. Pravdivosť formúl je zas definovaná ako spĺňanie každým (a vlastne jediným) $e_\varphi$ ohodnotením v \textbf{E}  (viď \ref{trueinE}).\par 
+
+%Otvorené formuly v E
+
+Pokiaľ uvažujeme o otvorených formulách, $e_\varphi$ sa správa rovnako ako $e$. Funkcia z neprázdnej množiny voľných premenných vo $\varphi$ do prázdnej množiny je rovnako nemožná ako pôvodné $e$. Nijaké $e_\varphi$ pre otvorené formuly neexistuje. V prípade uzavretých formúl je množina voľných premenných prázdna, a teda $e_\varphi$ existuje; je to prázdna funkcia: $\emptyset \rightarrow \emptyset$. Znamená to, že existuje práve jedno priradenie $e_\varphi$. Williamsonova modifikácia $e$ zabraňuje tomu, aby všetky formuly inkluzívnej logiky boli ekvivalentné, a vytvára možnosť pre príťažlivejšiu sémantiku inkluzívnej logiky \parencites[4--5]{williamson_note_1999}.\par
+
+%Uzavreté formuly v  E
+
+Pravdivosť uzavretých formúl v prázdnej štruktúre je potom vlastne daná upravenými definíciami \ref{trueinD}, \ref{model(exists)}, \ref{model(forAll)}:
+\begin{alignat}{3}
+	\mathbf{E} \models\varphi &&\iff& \mathbf{E}\models\varphi[e_\varphi] \label{trueinE} \\
+	\mathbf{E} \models (\exists x\varphi)[e_\varphi] &&\iff& \exists a \in \emptyset, (\mathbf{E} \models \varphi[e_\varphi(x/a)]) \label{Emodel(exists)} \\
+	\mathbf{E} \models (\forall x\varphi)[e_\varphi] &&\iff& \forall a \in \emptyset, (\mathbf{E} \models \varphi[e_\varphi(x/a)])	\label{Emodel(forAll)}
+\end{alignat}
+Ukázali sme, že existuje práve jedno $e_\varphi$, pravdivosť uzavretých formúl teda závisí práve na tom, či je daná formula týmto ohodnotením splniteľná v \textbf{E} (viď \ref{trueinE}). Podľa \ref{Emodel(exists)} je uzavretá formula s existenčným kvantifikátorom splniteľná práve vtedy, keď existuje prvok prázdnej množiny $a$, pre ktorý platí, že po jeho dosadení do voľných výskytov $x$ vo $\varphi$, bude formula $\varphi[e_\varphi(x/a)]$ splniteľná. Nakoľko však prázdna množina neobsahuje nijaké prvky, je jasné, že nijaký prvok $a$ neexistuje, a takáto uzavretá formula je v prázdnej štruktúre nepravdivá. Podobným spôsobom sa dopracujeme ku pravdivostnej hodnote formuly uzavretej všeobecným kvantifikátorom. V tomto prípade je však výraz \ref{Emodel(forAll)} triviálne pravdivý, pretože pre všetky prvky prázdnej množiny $a$ platí $\mathbf{E} \models \varphi[e_\varphi(x/a)]$. Znamená to teda, že po tejto úprave dostávame takú sémantiku inkluzívnej logiky, ktorá všetky formuly tvaru $\forall x \varphi$ ($\exists x \varphi$), kde $x$ je vo $\varphi$ voľne, vyhodnotí ako pravdivé (nepravdivé) \parencites[141--142]{mendelson_introduction_2015}[177]{quine_quantification_1954}[5]{williamson_note_1999}.\par 
+Takto definovaná pravdivosť uzavretých formúl je blízka intuícii. Tie výroky, ktoré \uv{hovoria o existencii} nejakých objektov v prázdnom univerze, sú nepravdivé, a tie, ktoré hovoria o všetkých objektoch prázdneho univerza (čiže o žiadnych), sú pravdivé. Priradenie nepravdivosti všetkým formulám uzavretým existenčným kvantifikátorom a pravdivosti formulám uzavretým univerzálnym je práve vyššie spomínaná Quineova procedúra určenia pravdivosti \parencites[177]{quine_quantification_1954}[161]{QuineLPV}.\par
+%VaCQuant
+Existuje ešte druh kvantifikovaných výrokov, ktoré sú gramaticky správne, no nemajú jasnú interpretáciu -- formuly s prázdnou kvantifikáciou (angl. \textit{vacuous quantification}). Prázdnou kvantifikáciou nazývame pripojenie kvantifikátora s premennou k formule, v ktorej sa daná premenná nevyskytuje voľne. Častým spôsobom, ako sa s ňou narába, je odstránenie nadbytočných kvantifikátorov. Formuly $\exists x \varphi$, $\forall x \varphi$, kde $x$ nie je vo $\varphi$ voľne, sa interpretujú rovnako ako samotné $\varphi$. Druhý možný prístup je, že budeme prázdno univerzálne kvantifikovanú formulu $\forall x \varphi$ čítať klasicky: \uv{Pre každé $x$ z domény diskurzu platí $\varphi$}. Prázdno existenčne kvantifikovanú formulu $\exists x \varphi$ potom chápeme ako \uv{existuje nejaké $x$ z domény diskurzu, pre ktoré platí $\varphi$}. Takéto formuly sú pre prázdnu doménu potom triviálne pravdivé ($\forall x \varphi$) a nepravdivé ($\exists x \varphi$). Ktorá z ciest je tá správna nie je celkom jednoznačné.\par 
+%Mostowski, Williamson Vacouous quantific.
+Mostowski, podobne ako Williamson, volí prvý spôsob; prázdno kvantifikované formuly tvaru $\forall x \varphi$ alebo $\exists x \varphi$ považuje pri interpretácii za ekvivalentné s $\varphi$. Za pravdivú v prázdnej štruktúre považuje napríklad zloženú formulu $\exists x (\varphi \Rightarrow \varphi)$, kde $\varphi$ neobsahuje $x$ voľne, ktorá by ináč v prípade neprázdnej kvantifikácie bola nepravdivá \parencites[197]{hailperin_quantification_1953}[108]{mostowski_rules_1951}[5]{williamson_note_1999}.
+%Quine, Hailperin, Bostock Vacouous quantific.
+Naopak Quine, Hailperin a Bostock preferujú druhú možnosť. Všetky, aj tie prázdne, univerzálne kvantifikácie považujú za pravdivé, a všetky existenčné za nepravdivé. Napriek väčšej intuitívnosti a snahe nerozlišovať prázdnu a neprázdnu kvantifikáciu, nie je tento prístup úplne nekontroverzný: Pravdivou tu je dokonca aj formula, ktorú by sme mali tendenciu nazvať nepravdivou, $\forall x (\varphi \land \neg \varphi)$ \parencites[348--349]{bostock_intermediate_1997}{hailperin_quantification_1953}. Quine však tvrdí, že, pokiaľ nechceme ku prázdnej kvantifikácii pristupovať špeciálne, sme nútení takúto formulu považovať za pravdivú, i keď sa to môže zdať protiintuitívne \parencites[177--178]{quine_quantification_1954}.\par
+%Porovnanie skupin
+Obe skupiny autorov sa teda zhodnú na tom, že $\forall x (P(x) \land \neg P(x))$ je pravdivá formula v \textbf{E}, lebo neobsahuje prázdnu kvantifikáciu. No ich názory sa líšia napríklad pri pripisovaní akejkoľvek interpretácie otvoreným formulám, ktoré Quine ani len neuvažuje, alebo pri uznaní pravdivosti prázdno kvantifikovaných formúl, ako je napríklad $\exists y \forall x (P(x) \lor \neg P(x))$. Túto formulu by Mostowski a Williamson považovali za pravdivú, zatiaľ čo Quine, Hailperin a Bostock za nepravdivú \parencites[348--349]{bostock_intermediate_1997}{hailperin_quantification_1953}{mostowski_rules_1951}{quine_quantification_1954}{williamson_note_1999}.\par
+Ďalším zaujímavým postrehom k tejto problematike je článok \textit{A Note on the \uv{Empty Universe}}. Hochberg v ňom lapidárne poznamenáva, že pôvodná neškodnosť prázdnej kvantifikácie v neprázdnom univerze sa v tom prázdnom javí celkom ináč: \uv{[\dots] prázdna kvantifikácia v prázdnom univerze nie je prázdna}.\footnote{V origináli: \uv{[...] vacuous quantification is not vacuous in the empty universe.}} Ba dokonca o čosi ďalej naznačuje, že kvantifikácia v prázdnom univerze nie je vlastne ani skutočnou kvantifikáciou. Kvantifikátory sú už skôr pravdivostnými funkciami na úrovni výrokov. Majú jeden vstupný argument, celý výrok, a sú definované pomocou tabuľky 1 \parencites[545]{hochberg}. Takéto ponímanie kvantifikácie v prázdnom univerze sa síce ponáša na Quineov postup, ten však nijak na rozdiel od Hochberga nespochybňuje kvantifikáciu ako koncept fungujúci aj v prázdnom univerze.
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+p & $\forall x p$ & $\exists x p$\\
+\midrule
+ 1 & 1 & 0\\
+ 0 & 1 & 0 \\	
+\bottomrule
+\end{tabular}
+\caption{Tabuľka pravdivostných hodnôt kvantifikátorov \parencites[545]{hochberg}.}
+  \end{center}
+\label{tab_tvfn}
+\end{table}
+\noindent Hochberg sa vo svojom článku okrem iného zamýšľa aj nad tým, prečo sú dve zdanlivo protichodné tvrdenia $\forall x P(x)$ a $\forall x \neg P(x)$ naraz pravdivé. Dochádza k záveru, že môže ísť o implicitnú analógiu s formulami $\forall x (M(x) \Rightarrow P(x))$, $\forall x (M(x) \Rightarrow \neg P(x))$. Pričom predikát $M$ číta ako \uv{existuje}. Pravdivosť spomínaných protichodných tvrdení, ako aj iných tvrdení s univerzálnym kvantifikátorom, je potom garantovaná nepravdivosťou zamlčaného antecedentu z analogických tvrdení. Pretože v prázdnom univerze nič neexistuje, obe vety sú pravdivé. Takýmto riešením však podľa Hochberga slovo \textit{všetko}, reprezentované všeobecným kvantifikátorom, stráca akýkoľvek význam, keďže sa ním v prázdnom univerze nič skutočne neoznačuje \parencites[545--546]{hochberg}.\par 
+I keď Hochberg vo svojom článku nenaznačuje nijaké analogické tvrdenia s formulami uzavretými existenčným kvantifikátorom, mohli by sme, pokiaľ chceme v Hochbergovej myšlienke analógií pokračovať ďalej, za analogické tvrdenia k nepravdivým formulám $\exists x P(x)$, $\exists x \neg P(x)$ označiť $\exists x (M(x) \land P(x))$ a $\exists x (M(x) \land \neg P(x))$. Aj v tomto prípade by sme predikátom $M$ označovali existenciu. Keďže je konjunkcia pravdivá iba v prípade, ak sú pravdivé oba jej členy, a v prázdnej doméne nič neexistuje, dostávame v oboch prípadoch nepravdivé tvrdenia pre neplatnosť prvého člena konjunkcie. Zaujímavé je, že takýmto spôsobom vlastne dostávame intuitívne výsledky Quineovej procedúry, avšak zavedením predikátu existencie posúvame klasické čítanie existenčného predikátu. Tejto oblasti skúmania sémantiky prázdnej domény sa ale budeme venovať nižšie.\par
+
+%\noindent \textbf{Hochberg poukázaním na správanie univerzálnej kvantifikácie spochybňuje vôbec význam slova \uv{všetko} v prázdnom univerze. Ako príklad uvádza dva pravdivé výroky, ktoré sa zdajú byť intuitívne protichodné: \uv{Všetko je červené.}, \uv{Nič nie je červené}. Formálnejšie: $\forall x (Červený(x))$, $\forall x (\neg Červený(x))$. Zamýšľa sa, či pravdivosť týchto výrokov nepramení z implicitnej analógie s formulami: $\forall x (M(x) \Rightarrow Červený(x))$, $\forall x (M(x) \Rightarrow \neg Červený(x))$, kde M označuje predikát \uv{byť morskou pannou}. Keďže neexistuje nijaká morská panna, jedná sa o pravdivé implikácie. Pravdivosť spomenutej formuly $\forall x (Červený(x))$ v prázdnom univerze potom vysvetľuje ako skrytú implikáciu: \uv{Všetko, ak by to bolo existovalo, je červené}. V prázdnom univerze nič neexistuje, a tak je táto veta pravdivá \parencites[545--546]{hochberg}.}\par
+
+%Martin
+%PAR1
+K podnetným riešeniam, ako sa vysporiadať s hodnotami premenných, zaiste patrí aj zaplnenosť prázdnej domény diskurzu nulovým indivíduom (angl. \textit{null individual}). Martin navrhuje takéto indivíduum vložiť do teórie logiky ako obdobu prázdnej množiny v teórii množín. Myslí si, že pomocou postulovania nulového indivídua sa vyhneme úpravám klasickej sémantiky a nijak neovplyvníme niektoré formuly, ktoré sú pravdivé v iných, neprázdnych doménach. Stačí, ak budeme nulové indivíduum považovať za \uv{nereálnu či fiktívnu súčasť} prázdnej domény. Toto indivíduum nám potom môže slúžiť nielen ako vyhnutie sa problémom prázdnej domény, ale aj ako referent pre tie termy, ktoré na nič neodkazujú, a aj pre tie, ktoré nemajú dostatočnú jednoznačnosť \parencites[725--727]{MARTIN}.\par 
+
+%PAR5
+% Martin svoju teóriu nulového indivídua rozvádza ďalej, a dospieva k zaujímavým výsledkom.
+Martin hlbším rozvádzaním svojej teórie dospieva k zaujímavým výsledkom. Vytvára dva druhy bytia -- aktuálne a entitové (angl. \textit{actual}, \textit{entitival}).
+Nulové indivíduum existuje entitovo. Existencia objektov v rámci iných domén ako prázdnej je aktuálna a je postulovaná v binárnej opozícii k nulovému indivíduu: \uv{Povedať o indivíduu, že existuje aktuálne, je len povedať, že je nenulové}\footnote{V origináli: \uv{To say of an individual that it exists actually is now merely to say that it is nonnull.}} \parencites[vlastný preklad,][727]{MARTIN}. Aktuálna existencia má vlastné označenie, Martin ju označuje operátorom existencie $\text{E}!$, ktorý používa ako bežný predikát, ktorý by sme pomocou jeho vlastnej notácie mohli definovať ako nerovnosť s nulovým indivíduom: $\text{E}!x \defeq x \neq a_0$. Prázdna doména tak zostáva prázdnou, pokiaľ ide o aktuálne súcna (platí $\forall x (\neg\text{E}!x)$), no obsahuje ako svoju \uv{súčasť} jediné entitové súcno -- prázdne indivíduum. Výsledkom Martinových úprav je, že klasická teória kvantifikácie môže byť bez úprav rozšírená aj na prázdnu doménu, a tvrdenia, ktoré by ináč stratili svoju platnosť (napríklad $\exists x (F(x) \lor \neg F(x)) $) zostávajú platnými aj v nej \parencites[726--727, 736]{MARTIN}.\par
+
+%PAR2
+Martinovej teórie nulového indivídua sa chopil Bunge, ktorý sa ju snaží podporiť ukážkami troch rôznych použití nulového indivídua v prírodných vedách. Ukazuje, čo by sme mohli považovať za nulové indivíduum v optike, kvantovej mechanike, biológii, sociológii a psychológii. Bungeho nulové indivídua však nedodržiavajú úplne pravidlá, ktoré pre nulové indivíduum stanovil Martin. Líšia sa v tom, že nie sú jediné indivíduum ale viaceré indivíduá, a každé z nich má nejaké vlastnosti. Bunge svoje nulové indivíduum považuje skôr za neutrálny prvok danej teórie z hľadiska mereológie: \uv{Nulové indivíduum daného druhu je vec, ktorá pridaná k ľubovoľnému indivíduu akéhokoľvek druhu dáva toto indivíduum}\footnote{V origináli: \uv{The null individual of a given kind is that thing which, added to an arbitrary individual of any kind, yields the latter.}} \parencites[vlastný preklad,][777]{bunge}. Názorný príklad porušenia Martinových pravidiel je hneď prvý Bungeho príklad. Bunge tvrdí, že optika sa zaoberá usporiadanými dvojicami $\langle\text{svetelné pole},\text{priehľadný materiál}\rangle$. V tejto teórií existujú hneď dve nulové indivíduá, ktoré tvoria usporiadanú dvojicu $\langle l_0, m_0 \rangle$, kde $l_0$ je tma a $m_0$ je vákuum, pričom obe indivíduá majú zreteľne definované vlastnosti \parencites[776--777]{bunge}.\par
+%PAR3
+Na problémy Martinovho riešenia nepoukazuje iba zložité nájdenie ukážok realizácií tohto indivídua v rôznych teóriách, o čo sa pokúsil Bunge. Voči Martinovi môžeme vzniesť hneď niekoľko námietok. Za prvé, nie je celkom jasné, čo nulové indivíduum vlastne je. Vieme, že má byť len niečím, čo Martin nazýva súčasťou prázdnej domény, no nemá byť jej prvkom. Čo presne to však znamená, a v čom sa prvky a súčasti domén odlišujú, Martin nevysvetľuje. Taktiež sa zdá byť prinajmenšom zvláštne, aby mená rozličných fiktívnych postáv (napríklad Sherlock Holmes alebo Harry Potter) odkazovali k jedinému indivíduu, keď o nich v bežnom jazyku vieme vypovedať v rôznych kontextoch a prisudzovať im rôzne vlastnosti (napríklad detektív a čarodejník). Rovnako, po postulovaní takéhoto indivídua, môžeme len ťažko povedať, že je doména diskurzu skutočne prázdna, a že sa nám podarilo vyhnúť všetkým zbytočným existenčným podmienkam; veď predpokladáme práve toto nové indivíduum a to v našom univerze predsa len nejak existuje. Nakoniec sa môžeme zamyslieť, či nulové indivíduum skutočne nemá žiadne vlastnosti, veď zrejme v predikátovej logike s rovnosťou by sme aj o ňom mohli povedať, že je samo so sebou identické.\par
+%\textbf{, alebo, ak nemá vlastnosť $F$, tak má vlastnosť $nonF$. Táto vlastnosť by vlastne slúžila aj na určenie nepravdivosti $\text{E}!a_0$ tak, ako sme ju vyššie spomenuli. Tomuto problému by sa však dalo vyhnúť v prípade postulovania $\text{E}!$ ako primitívneho symbolu.}.\par
+%PAR4
+Podobné problémy Martinovej teórie si všíma aj Swanson. Okrem iného Martinov koncept prázdnej domény s nulovým indivíduom nazýva \uv{pseudoprázdnou doménou}\parencites[774]{Swanson}. Jej domnelú prázdnosť demonštruje pomocou formuly $\exists x [(x\neq a_0 \land F(x)) \lor (x \neq a_0 \land \neg F(x))]$, ktorá tvrdí, že existuje nenulové indivíduum ($a_0$ označuje nulové indivíduum), ktoré má alebo nemá vlastnosť $F$. Pokiaľ je táto formula pravdivá, v Martinovej prázdnej doméne musí existovať aspoň jedno nenulové indivíduum, čiže doména diskurzu obsahuje dve entity. Pokiaľ je nepravdivá, platí $\forall x [(x=a_0) \lor (\neg F(x) \land F(x))]$, a teda $\forall x (x=a_0)$. V tomto prípade je doména jednoprvková. Preto Swanson hovorí, že Martinova prázdna doména nie je v skutočnosti vôbec prázdna. Je buď jednoprvková, alebo dvojprvková. Tvrdí, že neexistuje nijaký dôvod nazývať ju prázdnou, keďže je z logického hľadiska úplne nerozoznateľná od iných jedno či dvojprvkových domén. Martin ju nazýva prázdnou len falošne \parencites[774]{Swanson}.\par 
+Swanson si myslí, že sa môžeme vyhnúť zbytočným komplikáciám, ak zostaneme pri podmienke neprázdnosti domény s tým, že v prípade jednoprvkovej domény budeme uvažovať o jej zaplnení indivíduom, ktoré sa podobá tomu Martinovmu tým, že nemá nijaké vlastnosti. Vyššie spomenutú formulu potom môžeme jednoducho zapísať bez nutného postulovania nerovnosti s nulovým indivíduom: $\exists x (F(x) \lor \neg F(x))$. Swanson tak udržuje pravdivosť tejto klasickej formuly a zároveň nepravdivosť  $\exists x [(x\neq a_0 \land F(x)) \lor (x \neq a_0 \land \neg F(x))]$, pričom nepostuluje nijaké rôzne mody bytia ako Martin \parencites[774--775]{Swanson}.\par  
+Martinov článok však prináša spolu so zavedením operátora $\text{E}!$ otázku, ktorú sme načrtli už pri Hochbergovi. Ako máme interpretovať existenčnú kvantifikáciu v prípade, že existenciu už vyjadrujeme iným spôsobom ako existenčným kvantifikátorom? Súčasná klasická interpretácia existencie sa v logike opiera o Quineov známy výrok: \uv{byť znamená byť hodnotou premennej}\footnote{V origináli: \uv{To be is [\dots] to be the value of a variable.}}\parencites[vlastný preklad,][32]{quineThere}. Existencia samotná je potom totožná s výskytom v doméne diskurzu, respektíve s bytím v dosahu kvantifikátorov \parencites[96]{peregrin_filosofie_2017}. Videli sme ale, že Martinove kvantifikátory majú v dosahu aj tie indivíduá, ktoré nie sú plnohodnotnými prvkami domény alebo neexistujú -- nulové indivíduum, referent fiktívnych mien -- musí preto existovať iný spôsob vyjadrenia existencie, než je ten bežný. Alternatívne interpretácie kvantifikácie pritom môžu mať vplyv na pravdivosť formúl v prázdnej doméne. Englebretsen dokonca tvrdí, že sú jednou zo štyroch možností, ako sa vysporiadať s prázdnou doménou \parencites[352]{englebretsen}.\par
+%Martin kvant.
+Martin prezentuje svoju teóriu kvantifikácie v ďalšom článku, pričom je jej znenie v súlade s načrtnutým posunom interpretácie existenčného kvantifikátora. Martin považuje $\exists x$ iba za skratku za $\neg\forall x \neg$. Takéto ponímanie mu potom povoľuje čítať existenčne kvantifikované výroky bez použitia slova \uv{existuje}. Výskyt tohto slova je iba konvenciou a nie logickou nutnosťou. Existenčný kvantifikátor by sa tak nemal ani volať existenčný, ale nejak ontologicky neutrálnejšie, napríklad E-kvantifikátor, a mal by sa čítať: \uv{nie je pravda, že pre všetky $x$ z $D$ neplatí ...}. Jediná situácia, pri ktorej podľa Martina splýva E-kvantifikácia s fyzickou existenciou, je, ak je nosná množina štruktúry množina všetkých fyzikálnych objektov \parencites[525--527]{martinkvant}.\footnote{Ostatne podobne sa o postulovaní fyzickej existencie vyjadruje aj Quine, keď hovorí, že spôsob existencie veci skôr záleží na jej povahe než na nejakom špeciálnom priestorovom zmysle $\exists$ \parencites[116]{QuineNotes}.} Ako vidíme, takéto ponímanie existenčného kvantifikátora spolu so zavedením nulového indivídua a operátora $\text{E}!$ povoľuje použitie logiky a jej záverov aj v momentoch, keď pojednávame o veciach, ktoré neexistujú, a teda by nemali, aspoň na prvý pohľad, byť predmetmi existenčne kvantifikovaných súdov. Ešte zaujímavejšie však k vzťahu existencie a kvantifikácie pristupujú Leonard a Lejewski.\par
+%LEONARD -- Existencia = predikát
+Leonard si vo svojom významnom článku \textit{The Logic of Existence} všíma, že moderná logika dospela do štádia, kedy je síce existencia vyjadrená explicitne, no jedná sa o jediný druh existencie -- všeobecný (angl. \textit{general existence}). Tvrdenia ako $\exists x P(x)$ vyjadrujú všeobecnú existenciu $P$-vecí. V logike je však prítomná aj jednotlivá existencia (angl. \textit{singular existence}), ktorá nie je ale explicitne vyjadrovaná. Ide o existenciu vyjadrenú prevažne termami. Na to, aby túto existenciu Leonard vyjadril, používa, podobne ako Martin, predikát $\text{E}!$. To, že vec označená termom $t$ existuje, má singulárnu existenciu, zapisuje $\text{E}!t$. Všeobecnú existenciu Leonard vyjadruje pomocou symbolu $\exists !$, ktorý vlastne môžeme definovať ako $\exists ! P \defeq \exists x P(x)$. Pre termy platí, že môžu mať jednotlivú/singulárnu existenciu, no nie všeobecnú. Predikáty môžu mať obe existencie. Zaujímavým prínosom rozlíšenia všeobecnej a jednotlivej existencie je tiež zredukovanie stredovekého problému univerzálií na spor, či sú súdy o jednotlivej existencii všeobecných termínov pravdivé alebo nie \parencites[52]{leonard}.\par
+I keď singulárna existencia pôsobí veľmi podobne ako Martinova nerovnosť s nulovým indivíduom, Leonard ju definuje ináč. Využíva pri tom modálnu logiku -- operátor $\Diamond$ vyjadrujúci možnosť či absenciu sebarozpornosti tvrdenia. Singulárna existencia termu $x$ je definovaná ako:
+\begin{alignat}{3}
+		\text{E}!x \defeq \exists P (P(x) \land \Diamond \neg P(x)) \label{E!Leonard}
+\end{alignat}	
+Výraz \ref{E!Leonard} hovorí, že, ak existuje vlastnosť $P$, ktorú má term $x$, pričom ju ale nemá nutne (je možné, aby ju nemal), term $x$ má singulárnu existenciu. Leonard sa pritom domnieva, že takýmto definovaním singulárnej existencie stráca známe Kantovo \textit{dictum} \uv{existencia nie je predikát} zmysel, pretože existencia vyplýva iba z náhodných a nie nutných vlastností. Leonard dokonca existenciu priamo za predikát aj považuje \parencites[58]{leonard}! Leonard aj Martin prezentujú teda takú teóriu kvantifikácie, ktorá nijak nepostuluje existenciu objektov. Snažia sa redefinovať či čítať existenční kvantifikátor a tvrdenia s ním tak, aby nutne neobsahovali nijaké existenčné záväzky. Práve preto by táto teória kvantifikácie mohla byť uplatniteľná aj v prázdnej doméne, čo nakoniec priznáva aj Englebretsen \parencites[352]{englebretsen}. Je ale pravda, že Leonardova definícia singulárnej existencie, čoho si je aj sám vedomý, nemusí byť veľmi pochuti nominalisticky zmýšľajúcim mysliteľom, ktorí odmietajú kvantifikáciu cez vlastnosti \parencites[56]{leonard}.\par 
+%Lejewski
+Ďalší zaujímavý príspevok k teórii kvantifikácie, ktorý by mohol byť uplatniteľný v inkluzívnej logike, je Lejewského neobmedzená kvantifikácia. Klasická teória kvantifikácie narába s kvantifikáciou premenných prebiehajúcich iba cez prvky domény diskurzu. Lejewski ju pre túto limitáciu nazýva obmedzenou kvantifikáciou. Ako príklad rozdielu medzi týmito ponímaniami kvantifikácie používa jazyk $L$ so štyrmi indivíduovými konštantami ($a$, $b$, $c$, $d$), z ktorých iba dve majú referent z univerza ($r(a) \in D$, $r(b) \in D$). Ako sme už povedali, v klasickom ponímaní je existencia synonymná s výskytom v univerze, preto platí, že obmedzene kvantifikovaný výrok $\forall x (x \text{ existuje})$ je pravdivý, pretože sa dá jednoducho rozpísať na konjunkciu výrokov $a \text{ existuje}$ a $b \text{ existuje}$. V prípade neobmedzenej kvantifikácie však toto tvrdenie nie je platné, pretože do konjunkcie musíme pridať výroky, v ktorých $a$ a $b$ nahradíme s $c$ a $d$. Ako už ale bolo uvedené, $c$ a $d$ nemajú výskyt v univerze, a preto $\forall x (x \text{ existuje})$ nie je pravda. Vďaka takto interpretovanej kvantifikácii je ale pravdivý výrok $\exists x (x \text{ neexistuje})$ \parencites[108--110]{lejewski}. Takáto úprava kvantifikácie pritom udržuje platnosť dôležitých logických tvrdení, ktoré by ináč napríklad podľa Quinea mali byť nepravdivé, menovite $\exists x (P(x) \lor \neg P(x))$, $\forall x P(x) \Rightarrow \exists x P(x)$ \parencites[352]{englebretsen}[112]{lejewski}.\par
+Treba ale dodať, že takáto úprava kvantifikácie ide proti duchu modernej logiky, ktorá univerzum volí, ako to nazvali Peregrin a Vlasáková, \uv{oportunisticky} \parencites[96]{peregrin_filosofie_2017}. Pri neobmedzenej kvantifikácii môžeme mať aj nepríjemný pocit z nejasnosti vymedzenia množiny objektov, o ktorých hovoríme. Zároveň so zmenou rozpätia hodnôt premenných pri kvantifikácii sa stráca aj zmysel vôbec určovať doménu pri výbere štruktúry. Veď napríklad pri univerze zloženého z obyvateľov Olomouca, premenné budú naberať hodnoty aj ľudí z Amsterdamu alebo zvierat žijúcich v Japonsku, keďže kvantifikácia, a priraďovanie hodnôt premenným, funkcia $e$, prebieha aj cez entity mimo zvolené univerzum. Môžeme taktiež predpokladať, že pre nejasné vymedzenie tohto širokého, skutočne univerzálneho univerza, bude tiež niekedy zložité $e$ vôbec skonštruovať. V časti \ref{flogics} o voľných logikách uvidíme spôsob, ktorý síce nebude operovať s tak širokým univerzom, no bude postupovať obdobne, keď bude narábať s dvoma doménami, z ktorých jedna bude \uv{širšia}.\par
+
+Ďalším spôsobom, ako sa vyrovnať s problémami spojenými s prázdnou doménou je svojvoľné priradenie pravdivostných hodnôt formulám tak, aby bola zachovaná pravdivosť tých, ktoré sú chcené \parencites[352]{englebretsen}. K logikom, ktorý k takémuto riešeniu pristúpili, patrí Karl Potter. Tvrdí, že Quine dochádza ku svojej procedúre, pretože sa mu nepodarilo postrehnúť rozdiel medzi popretím a negáciou (angl. \textit{denial, negation}). Quine v \textit{On What There is} prepisuje vetu \uv{Pegas neexistuje} na $\neg \exists x (x \text{ pegasuje})$, a tvrdí, že nás takéto tvrdenie nezaväzuje ku existencii ničoho, čo ju spĺňa \parencites[27]{quineThere}. Potter ale podotýka, že z tohto tvrdenia vyplývajú iné tvrdenia, ktoré využívajú podmienku neprázdnosti domény: $\forall x (x \text{ nepegasuje})$, $\exists x (x \text{ nepegasuje})$. Tieto tvrdenia nás už ale zaväzujú k existencii aspoň jedného objektu v univerze, ktorý nie je Pegasom \parencites[52]{potter}.\par
+Aby sa Potter vyhol existenčným záväzkom, ktoré Quineova teória obsahuje, vytvára rozdiel medzi negáciou a popretím. Negácia je unárny konektor, ktorý prevracia pravdivostnú hodnotu akéhokoľvek výroku. Popretie je operácia na predikáte, ktorá nutne nemusí meniť pravdivostnú hodnotu, ale určite udržiava ontologický záväzok tvrdenia, v ktorom sa popretý predikát vyskytuje.\par
+Ako príklad popretia ($nonP$) a negovania Potter uvádza vety \uv{Palmer trafil jamku} ($P(a)$), \uv{Palmer minul jamku} ($nonP(a)$), \uv{Nie je pravda, že Palmer trafil jamku} ($\neg P(a)$). Odlišnosť vo význame $nonP(a)$ a $\neg P(a)$ je v tom, že v prípade $nonP$ sa Palmer pokúsil trafiť jamku, ale neuspel, no v prípade negácie sa Palmer ani len nepokúsil trafiť jamku. Tieto tvrdenia potom Potter analogicky s Quineovými tvrdeniami o Pegasovi upravuje na $\exists x (x \text{ palmerizuje} \land P(x))$, $\exists x (x \text{ palmerizuje} \land nonP(x))$, $\neg \exists x (x \text{ palmerizuje} \land P(x))$ \parencites[350--351]{englebretsen}[53--54]{potter}.\par
+V snahe vyjadriť, kedy nás nejaké logické tvrdenie skutočne zaväzuje aj k postulovaniu nejakej existencie, Potter definuje ontologický záväzok:
+\begin{center}
+\begin{quote}
+Byť je byť hodnotou viazanej premennej v danej tvrdenej formule S, pokiaľ (1) je S kategorická a bez negácií, alebo (2) z S logicky vyplýva formula, ktorá je kategorická a bez negácií.\footnote{V origináli: \uv{Given an asserted formula S, to be is to be a value of a bound variable in S if either (1) S is categorical and tilde-free, or (2) S logically implies a formula which is categorical and tilde-free.}}\parencite[vlastný preklad,][54]{potter}
+\end{quote}
+\end{center}
+\noindent Kategorickou nazýva Potter takú formulu, ktorá je atomická, alebo pozostáva z konjunkcie, v ktorej aspoň jeden z konjugovaných výrokov je atomickou formulou \parencites[351]{englebretsen}[54]{potter}.\par 
+Formula $\exists x (P(x) \lor \neg P(x))$ nie je kategorická a obsahuje negácie, rovnako z nej nevyplýva nijaká kategorická formula bez negácií. Nespĺňa nijakú podmienku z Potterovej definície ontologického záväzku. Táto formula nás nezaväzuje k existencii ničoho. Preto ju môžeme v prázdnej doméne považovať za pravdivú, myslí si Potter. 
+%\textbf{[AJ VAN FRAASSEN -- SUPERVALUACIE.]} 
+Z pohľadu Quineovej procedúry je v prázdnej doméne problematická aj formula $\forall x P(x) \Rightarrow \exists x P(x)$. Potterova úprava však aj v tomto prípade zaručí pravdivosť tejto formuly. Nie je to totiž kategorická formula a ani z nej nijaká kategorická formula nevyplýva. Jej tvrdením sa teda nezaväzujeme k nijakej existencii. Aby Potter udržal jej platnosť pripisuje kvantifikovaným výrokom pravdivosť nie na základe použitého kvantifikátora ako Quine, ale na základe toho, či obsahujú negáciu. Tvrdenia bez negácie sú nepravdivé, tvrdenia s negáciou sú pravdivé. Toto rozhodnutie nie je úplne arbitrárne, Potter sa ním snaží zabrániť pravdivosti tých tvrdení, ktoré majú ním definovaný ontologický záväzok. Týmto rozhodnutím sa mu ale darí aj udržať platnosť druhej spomínanej problematickej formuly \parencites[351--352]{englebretsen}[55]{potter}.\par
+Najlepší spôsob, ako si môžeme vyobraziť rozdiel medzi priradením pravdivostných hodnôt základným kvantifikovaným výrokom, je vyobrazený na diagrame \ref{quantsquare}.
+\begin{diagram}[H]
+\centering
+\refstepcounter{diagramFig}
+\begin{tikzpicture}[
+                corner/.style={font=\bfseries\large\sffamily}, 
+                arrow/.style={->,>=stealth,thick},  
+			  Tarrow/.style={->,>=stealth},
+                label/.style={font=\small\sffamily,fill=white,midway},
+                contra/.style={thick},
+				split/.style={},
+			  Tlabel/.style={font=\footnotesize\sffamily}
+                ]
+                \node[corner] (E) at (3,2)  {$\forall x \neg P(x)$};
+                \node[corner] (O) at (3,-2)  {$\exists x \neg P(x)$};
+                \node[corner] (I) at (-3,-2)  {$\exists x P(x)$};
+                \node[corner] (A) at (-3,2)  {$\forall x P(x)$};
+
+			  \node[corner] (q1) at (-4.2,0){};
+                \node[corner] (q2) at (4.2,0) {Quine};
+			   \draw[dashed]	(q1) -- (q2);	
+				\node[Tlabel] (q3) at (4.2, -1) {Nepravda};
+				\node [Tlabel] (q4) at (4.2, 1)  {Pravda};
+				\draw[Tarrow] (q2) -- (q3);
+				\draw[Tarrow] (q2) -- (q4);
+
+				\node[corner] (p1) at (0,-3.2){};
+                \node[corner] (p2) at (0, 3.2) {Potter};
+				\draw[dashed]	(p1) -- (p2);	
+				\node[Tlabel] (p3) at (-2, 3.2) {Nepravda};
+				\node [Tlabel] (p4) at (1.85, 3.2)  {Pravda};
+				\draw[Tarrow] (p2) -- (p3);
+				\draw[Tarrow] (p2) -- (p4);
+
+                %\draw[arrow] (A) -- (I) node[label] {subalterns};
+                %\draw[arrow] (E) -- (O) node[label] {subalterns};
+                %\draw[contra] (A) -- (O);
+                %\draw[contra] (I) -- (E) node[label] {contradictories};
+                %\draw[contra] (A) -- (E) node[label] {contraries}; 
+                %\draw[contra] (I) -- (O) node[label] {contraries};
+					
+
+			  \draw[arrow] (A) -- (I);
+                \draw[arrow] (E) -- (O);
+                \draw[contra] (A) -- (O);
+                \draw[contra] (I) -- (E);
+                \draw[contra] (A) -- (E); 
+                \draw[contra] (I) -- (O);
+                
+                \node[] (Ac) at (-3,2.75) {\textbf{A}};
+				\node[] (Ec) at (3,2.75) {\textbf{E}};
+				\node[] (Ic) at (-3,-2.75) {\textbf{I}};
+				\node[] (Oc) at (3,-2.75) {\textbf{O}};
+                %\node[above of = E,yshift=-18,font=\footnotesize] {No S is P};
+                %\node[below of = I,yshift=18,font=\footnotesize] {Some S is P};
+                %\node[below of = O,yshift=18,font=\footnotesize] {Some S is not P};
+            \end{tikzpicture}
+\captionsetup{labelformat=diagram}
+\caption{Štvorec kvantifikovaných tvrdení. Rozdelenie pravdivosti tvrdení v \textbf{E} podľa Quinea a Pottera.} 
+\captionsetup{labelformat=default}
+\label{quantsquare}
+\end{diagram}
+%%VYMENIL SOM ZATIAĽ, ČO .... PAR (bolo to nad diagramom)
+\noindent  Zatiaľ, čo Quine považuje v prázdnej doméne univerzálne kvantifikované výroky za pravdivé a existenčne za nepravdivé, Potter nezohľadňuje druh kvantifikátora, ale považuje za pravdivé iba tie, ktoré obsahujú negácie. Štvorec si teda môžeme rozdeliť dvoma spôsobmi, Quine považuje za pravdivú jeho hornú polovicu (body A, E), Potter zas jeho pravú polovicu (body E, O) \parencites[351--352]{englebretsen}[55]{potter}. \par Úpravy a problémy, ktoré sme načrtli pri Hochbergovi, Martinovi, Lejewskom, Potterovi a ďalších, majú jeden spoločný rys. Posunom čítania existenčného kvantifikátora či rozšírením jeho záberu mimo doménu a aj postulovaním predikátu existencie narážame na problém, ktorý úzko súvisí s prázdnou doménou. V prípade, že nami preberané univerzum neobsahuje nijaké prvky -- nič v ňom neexistuje -- núti použitie existenčných ale aj univerzálne kvantifikovaných tvrdení k položeniu otázky o statuse neexistujúcich objektov. Prázdna doména a aj voľné logiky naozaj zvádzajú k určitému meinongianizmu. Hochbergov náznak predikátu existencie či priamo jeho postulovanie Martinom a Leonardom naznačuje, že nejakým spôsobom sú v dosahu kvantifikátorov, v univerze, aj objekty, ktoré neexistujú. Lejewského neobmedzená kvantifikácia zas svojou snahou zahrnúť všetko podsúva kvantifikátorom aj neexistujúce objekty. Takéto zoskupenie objektov sa však môže niektorým logikom, ktorý, tak ako Quine, preferujú skromnejšie \uv{púštne scenérie}, zdať preplnené \parencites[23]{quineThere}.\par
+
+%Lambert o predik....... Problémy s tým sú známe SEP EXISTENCIA MEINONGIANISM. \par 
+
+Invenčný prístup k meinongovskej džungli predostiera Hintikka v článku \textit{Are There Nonexistent Objects? Why Not? But Where Are They?}. Na titulnú otázku článku, či existujú neexistujúce objekty, odpovedá kladne, a vzápätí sa zamýšľa nad tým, prečo veľké množstvo filozofov a logikov popiera existenciu neexistujúcich objektov. Ako najzrejmejší dôvod vidí, že miesto toho, aby uvažovali v sémantických pojmoch, pohybujú sa iba na úrovni syntaxe. Aj najvýznamnejší logici sa sústredujú viac na syntaktický vzťah odvodzovania, a existenčný záväzok spojený s referentom termu stotožňujú často s tým, či sa z nejakého tvrdenia s týmto termom dá odvodiť jeho existenčné zobecnenie. Hintikka toto zameranie spája s dichotómiou vtedajšej filozofie jazyka, s kontrastom medzi dvoma pohľadmi na jazyk -- jazyk ako univerzálne médium a jazyk ako kalkul \parencites[451--453]{Hintikka}.\par
+V prvom prípade sa jazyk považuje za všeobsiahly a neuchopiteľný, čo bráni možnosti objektívne ho analyzovať. Táto perspektíva neumožňuje ani systematickú teóriu modelov, keďže tá je postavená na flexibilnom experimentovaní s rôznymi sémantickými vzťahmi medzi jazykom a realitou. Teória modelov sa ale neodmysliteľne opiera o druhú spomínanú perspektívu. Prívrženci perspektívy jazyka ako univerzálneho média ale môžu stále prezentovať svoje názory na sémantické otázky. Musia si ale uvedomiť obmedzenia, ktoré spôsobuje samotný jazyk pri ich vyjadrovaní. Jedným z nich je aj neschopnosť prisúdiť existenciu neexistujúcim indivíduám. Práve toto obmedzenie núti veľkú časť logikov neuvažovať nad neexistujúcimi objektmi \parencites[453--454]{Hintikka}.\par
+Po prijatí druhej perspektívy, a s ňou aj možnosti neexistujúcich predmetov, môžeme podľa Hintikku začať pátrať po tom, kde sa nachádzajú. Ak totiž začneme prechádzať jednotlivé neexistujúce indivíduá, zistíme, že ich môžeme zaradiť do niekoľkých množín. Dostávame tak množiny možných objektov, ktoré môžeme nazvať možnými svetmi. A to je práve Hintikkova odpoveď na to, kde neexistujúce predmety nájdeme. Jediný problém, ktorý s Meinongovou džunglou Hintikka má, je, že doposiaľ nebola poriadne premeraná a rozparcelovaná na zvládnuteľné časti. Otázka existencie týchto možných objektov je potom jedna z najmenej zaujímavých. Najmä, ak ju porovnáme s úlohou presne vyčleniť hranice jednotlivých možných svetov \parencites[454--455]{Hintikka}. Problém zmeny čítania kvantifikátorov či zavedenie existenčného predikátu vedúci k zaplneniu prázdnej domény neexistujúcimi predmetmi sa teda nezdá byť až tak naliehavý.
+
+
+
+%Najväčší problém s džungľou je jej chaotickosť a prerastenosť \parencites[]{Hintikka}.... Správnym, postupným preskúmavaním ..... Problém s Meinongovskou džunglou je, že nie je rozparcelovaná. Pokiaľ by bola, bola by množinou možných svetov, kde každá parcela by bol jeden možný svet.... No i tak je oproti púštnou scenériou, ktorú obľubuje Quine a iní nominalisti, preplnená.... Otázka demarkácie -- určenie hraníc možných svetov tak, aby objekty v nich obsiahnuté neboli navzájom rozporuplné; tiež problém, keď jedno indivíduum je vo viacerých svetoch, \par
+
+%3 versionen der Meinongische Logik Chrudzinski: $\exists_Q x P(x) \Rightarrow \exists_M x P(x)$, ale nie $\exists_M x P(x) \Rightarrow \exists_Q x P(x)$. $\exists_M$ je viac neobmedzená. $\exists_Q x P(x) \defeq \exists_M x (P(x) \land \text{E}!x)$. s. 58
+%Z Martinovho článku teda vyplýva, že premenné jazyka s menom pre nulové indivíduum bežia cez všetky súcna, aktuálne aj entitové. Práve vďaka tomu sa Martinovi darí udržať platnosť niektorých tvrdení aj v prázdnej doméne (napríklad $\exists x (F(x) \lor \neg F(x))$). Avšak zavedenie takéhoto indivídua a predikátu existencie nesie so sebou aj posun interpretácie existenčného kvantifikátora. Ako sme už ukázali u HOCHBERGA
+
+%PREPIS
+%\textbf{Ak Quine hovorí, že byť je byť hodnotou premennej, a Ex je vyjadrenie existencie .... Nemôžeme čítať $\exists x$ ako \uv{existuje také $x$ \dots}, keďže o nulovom indivíduu hovoríme, že neexistuje aktuálne. Platia aj tvrdenia $\exists x (\neg\text{E}!x)$. LEONARD, ENGLEBRETSEN (sommers).... Podobá sa to na Meinonga. Zaujímavé aj viacnásobné kvantifikácie. Platos beard + Lambert: Russell a Meinong o predikcii,}\par
+%\textbf{Premenné v jazyku s takouto úpravou bežia pri interpretácii v \textbf{E} cez nulové indivíduum; funkcia $e$ priradí všetky premenné práve a jedine tomuto indivíduu. Preto sa Martinovi darí udržať platnosť takých tvrdení, ako je napríklad $\exists x (F(x) \lor \neg F(x))$. AKO VŠAK ČÍTAŤ TAkĚTO $\exists x$, UŽ ASI NIE EXISTUJE X ... SKOR PRE NEJAKÉ X ...}\par
+%\textbf{ MARTIN TEDA HOVORÍ (IMPLICITNE) ZE EX MA BYT CITANE NEJAK INAC NEZ EXISTUJE X, A V TAKOM PRIPADE SA ROZCHADZA S QUINEOM, KTORY TAK EX CITA, MA TO BYT NEJAK INAC... PRETO MOZE VLASTNE MOZNO AJ UDRZAT TO CO ROBI SOMMERS, KED V TROJUOHLNIKU MIESTO T: AE F: IO (QUINE,... A KLASICKE CITANIE EXIST.) MA T:AI F:EO -- TO JE ALE ZASE INE CITANIE KVANTIFIKATOROV ASI...ENGLEBRETSEN S. 353: Obviously there are as many senses of "exist" as there are domains of discourse.}\par
+%\textbf{Swanson poukazuje na ďalšie problémy s Martinovým konceptom. Okrem iného tvrdí, že Martinova snaha zastrešiť klasickou teóriou kvantifikácie aj prázdnu doménu bola neúspešná. Ak sa totiž zamyslíme nad pravdivosťou formuly $\exists x [(\text{E}!x \land F(x)) \lor (\text{E}!x \land \neg F(x))]$, zistíme, že ak je táto formula nepravdivá, vraví to isté, čo formula $\exists x (F(x) \lor \neg F(x))$ v klasickej logike, a ak je pravdivá, hovorí, že existuje nejaké indivíduum odlišné od $a_0$.}
+%\par
+%PREPIS 
+
+%\textbf{[O akej existencii hovorí Ex? A prečo je nejaká "existencia" vyjadrená formou výroku Ex.... a druhá ako predikát .... a tretia nijak špeciálne]}\par
+
+%\textbf{[Poznamky: O akej existencii potom hovorí $\exists x$ ? Aktuálnej či entitovej? O žiadnej? Nesmeruje to k dvojdoménovým voľným logikám, keď vnútorná doména môže byť prázdna, ale vonkajšia má podmienku zaplnenosti (potom sú aj dva druhy kvantifikátorov, dokopy 4ks)? Vnútorná doména = prázdna s nulovým indivíduom?; Meinongian jungle vs. desert landscape?]}\par
+
+
+%Množina logicky platných formúl v IL
+Na záver ešte môžeme poznamenať, aký vplyv má prijatie prázdnej domény na množinu logicky platných formúl. Pokiaľ si uvedomíme, že podľa Quineovej procedúry sú všetky existenčne kvantifikované formuly nepravdivé a všetky univerzálne kvantifikované pravdivé, vidíme, že množina pravdivých formúl v prázdnej doméne neobsahuje existenčne kvantifikované formuly. V časti \ref{subsubsec:truth} o pravdivosti formúl sme definovali logickú platnosť formuly ako spĺňanie každým ohodnotením v každej štruktúre. Ak teraz medzi možné štruktúry zaradíme aj \textbf{E}, výsledná množina platných formúl bude prienikom množín doposiaľ platných formúl exkluzívnej logiky a pravdivých formúl v \textbf{E}. Množina platných formúl inkluzívnej logiky je teda menšia \parencites[172]{amer}[146]{mendelson_introduction_2015}.\par
+
+V tejto pasáži práce sme sa venovali zmenám v sémantike klasickej predikátovej logiky po odmietnutí podmienky neprázdnosti univerza. Ukázali sme, ako vyzerajú realizácie jednotlivých symbolov, a aké implikácie to má pre celý jazyk inkluzívnej logiky. Venovali sme sa spĺňaniu formúl a pravdivosti v prázdnej štruktúre \textbf{E}. Predostreli sme zmenu v definícii funkcie $e$ navrhovanú Williamsonom a iné viaceré zaujímavé postrehy týkajúce sa postupov určovania pravdivosti či obecnej funkcie kvantifikátorov v inkluzívnej logike. V ostatnej partii tejto prvej časti práce sa budeme venovať argumentom, prečo je vôbec potrebné zaujímať sa o takúto logiku, a protiargumentom, ktoré jej významnosť spochybňujú.
+
+
+
+%ARGUMENTY ZA
+\subsubsection{Argumenty pre inkluzívnu logiku}
+V predchádzajúcich odsekoch sme videli, aký vplyv má prijatie prázdnej domény na predikátovú logiku. Viaceré vzniknuté komplikácie museli autori riešiť \textit{ad hoc} nápravami, a mnohokrát ani takáto úprava nebola úspešná alebo neviedla k neproblematickému záveru (napríklad pri interpretácii otvorených formúl). Napriek tomu sa nájdu viacerí logici, ktorí považujú inkluzívnu logiku za nenahraditeľný prvok poznania. V tejto časti si uvedieme niekoľko dôvodov, pre ktoré sa jej napriek viacerým komplikáciám oplatí venovať.\par
+%CISTOTA 
+
+%\noindent\textbf{{\large Argument: Logická nutnosť a prázdne univerzum}}\par
+
+Jeden z hlavných argumentov, prečo sa venovať inkluzívnej logike, bol prezentovaný hneď v úvode práce. Klasická predikátová logika povoľuje validný úsudok, ktorého záver vyžaduje, aby univerzum diskurzu obsahovalo minimálne jedno indivíduum: 
+
+\begin{usudok}[H]
+\refstepcounter{usudokfig}
+\begin{logicproof}{2}
+	\forall x P(x) & Premisa 1\\
+	P(a) & Eliminácia $\forall$ 1\\
+	\exists x P(x) & Zavedenie $\exists$ 2
+\end{logicproof}
+\captionsetup{labelformat=usudok}
+\label{VxEx}
+\caption{Dôkaz tvrdenia $\forall x P(x) \Rightarrow \exists x P(x)$.} 
+\captionsetup{labelformat=default}
+\end{usudok}
+
+\noindent Skrátene môžeme úsudok \ref{VxEx} vyjadriť ako: $\forall x P(x) \Rightarrow \exists x P(x)$. Práve táto požiadavka, ak všetko má vlastnosť P, tak niečo má vlastnosť P, bola zdrojom Russellových obáv z nečistoty logiky. Bricker si všíma, že úsudok \ref{VxEx} má za následok, že univerzálne uzavreté vety majú totožné ontologické záväzky ako ich existenčné náprotivky \parencites[]{sep-ontological-commitment}. Neprázdnosť domény nie je v klasickej logike iba otázkou pragmatiky, aby sa malo, o čom hovoriť, ale je priam logickou nutnosťou. To, že by mala existencia prvkov akejkoľvek domény, napríklad stolov, pegasov či gravitónov, byť logicky nutnou, je len ťažko predstaviteľné či dokonca úplne neuveriteľné \parencites[183--184]{oliver_plural_2016}.\par
+Podobné výčitky voči skrytým predpokladom v logike mal aj Jaśkowski.
+%\footnote{Obdobný názor zastával aj iný logik ľvovsko-varšavskej školy -- Leśniewski -- ktorý požadoval \uv{ontologickú neutralitu axiomatických systémov} \parencites[135]{rybarikova_uvod_2020}. } 
+Ten sa však, na rozdiel od Russella, rozhodol tohto predpokladu zbaviť, a programovo si predurčil vybudovať úplne inkluzívnu logiku, logiku bez existenčných predpokladov \parencites[254--255]{jaskowski}.\footnote{Samozrejme, Jaśkowski nepoužíva termín inkluzívna logika.} Ako píše Bencivenga, Jaśkowski bol dokonca prvý, kto vytvoril skutočný systém inkluzívnej logiky \parencites{bencivenga_jaskowski}. Svoj zámer formuloval nasledovne: 
+\begin{center}
+\begin{quote}
+
+Intuitívny význam \uv{$\neg\forall x \neg \varphi(x)$} je: \uv{pre nejaké x platí $\varphi(x)$}. Vyššie uvedená veta [$\forall x \varphi(x) \Rightarrow (\neg\forall x \neg \varphi(x))$] teda znamená: \uv{Ak pre každé x platí $\varphi(x)$, potom pre nejaké x platí $\varphi(x)$}. V nulovom poli indivíduí (Individuenbereich), t. j. za predpokladu, že na svete neexistuje žiadne indivíduum, je táto veta nepravdivá. Systém [obsahujúci spomínanú vyššie uvedenú vetu] teda konštatuje existenciu aspoň jedného indivídua. Ale či indivíduá existujú alebo nie, je lepšie riešiť prostredníctvom iných teórií. Predstavíme preto systém kalkulu funkcií, v ktorom budú všetky tézy splnené v nulovom poli indivíduí.\footnote{V origináli: \uv{The intuitive meaning of '$N\Pi xN\varphi x$' is: 'for some x, $\varphi x$ holds'. The above thesis therefore means: 'If for every $x, \varphi x$, then for some $x, \varphi x$'. In the null field of individuals (Individuenbereich), i.e. under the supposition that no individual exists in the world, this proposition is false. Thus the system states the existence of at least one individual. But whether individuals exist or not, it is better to solve this problem through other theories. We shall present therefore a system of the calculus of functions, where all the theses will be satisfied in the null field of individuals.}}\parencite[vlastný preklad, aktualizovaná notácia,][254--255]{jaskowski}
+
+\end{quote}
+\end{center} 
+Najdôležitejším argumentom pre inkluzívnu logiku je apel na čistotu matematiky, a jej schopnosť dochádzať k záverom bez predpokladania čohokoľvek, čo nie je nutné. Zahrnutie prázdnej domény do logiky znižuje nadbytočné existenčné predpoklady. Inkluzívna logika je teda druh logiky vernejší duchu matematického minimalizmu, ktorý k svojim záverom postupuje opatrnejšie než exkluzívna logika, a zostáva v \uv{ontologických záležitostiach neutrálny} \parencites[]{sep-quantification}.\par
+
+%APRIORI VS PRAXIS
+%\noindent\textbf{{\large Argument: Apriori vs. Praktickosť}}\par
+Ďalší argument v prospech inkluzívnej logiky je postavený na napätí medzi jej apriórnosťou a využiteľnosťou. Logika býva tradične ponímaná ako veda skúmajúca zákonitosti, ktoré platia a sú odvoditeľné aj bez akejkoľvek podpory empirických faktov. Bostock ale hovorí, že popri tom na ňu kladieme aj nárok praktickosti. Má hodnotiť reálne úsudky, kategorizovať ich a pomáhať pri ich tvorbe. Tie sa ale môžu týkať čohokoľvek. V našom každodennom živote rozprávame o množstve vecí, z ktorých nie všetky aj existujú. Nezriedka uvažujeme práve o takých, ktorých existenciou si nie sme istí. Ak chceme vo všetkých týchto úvahách postupovať pomocou jedinej logiky, klasická predikátová logika, ktorá predpokladá existenciu aspoň niečoho, nám, domnieva sa Bostock, nemôže stačiť \parencites[351--352]{bostock_intermediate_1997}.\par
+
+Práve tu leží pôvod logickej nečistoty, ktorej sa chcel vyvarovať aj Russell, ako sme videli v úvodnom citáte. Validnosť úsudku určujeme výhradne pomocou logiky. Tá by ale mala byť nezávislá od toho, či to, o čom práve hovoríme, existuje. Preto, aby sme udržali logiku apriórne číru, oddelenú od neapriórného poznania, musíme jej zabrániť vo vmiešavaní sa do poľa pôsobnosti iných, aposteriórnych vied tvrdeniami, ktoré sa nezdajú byť v jej područí. Použitím logiky v určitej doméne predpokladáme, že predmety, o ktorých hovoríme, existujú, no to, či \textit{skutočne} existujú, by sme zaiste radšej zverili na vyriešenie inej vede, alebo ako hovorí Jaskowski \uv{teórii}, než logike. Podobný názor zastávajú aj Church a Küng, Smith priamo navrhuje konkrétnu vedu s autoritou v existenčných otázkach -- fyziku \parencites[1013]{Church}[254--255]{jaskowski}[254--255]{Guido}[203]{russell_introduction_1993}[331]{Smith2020}.\par 
+
+Zotrvávajúc na požiadavke existencie aspoň jedného indivídua vo svojom univerze sa logika vzdáva nároku apriórnosti. Pri určovaní platnosti úsudku je totiž potrebné zistiť, ako na tom doména diskurzu populačne je. Bostock píše: \uv{[\dots] pokiaľ má hodnotenie argumentu prebiehať a priori, nemali by sme sa pri výbere domény spoliehať na naše empirické znalosti. Ak však domény musia byť neprázdne, nedá sa tomu vyhnúť, pretože nemôžeme a priori vedieť, či existujú ľudia, nábytok alebo mestá, alebo niečo iné}\footnote{V origináli: \uv{[\dots] if the evaluation of the argument is to proceed a priori, we should not be relying upon our empirical knowledge when selecting a domain. Yet if domains have to be non-empty, then this cannot be avoided, for we cannot know a priori that there are people, or bits of furniture, or cities, and so on.}} \parencites[vlastný preklad,][351]{bostock_intermediate_1997}. Logika, pokiaľ chce slúžiť ako praktický nástroj všetkých úsudkov, a pritom si udržať svoju apriórnosť, sa musí vzdať akýchkoľvek existenčných predpokladov. Musí postupovať úplne obecne, počítať aj s prázdnou doménou -- byť inkluzívnou.\par
+
+%\noindent\textbf{{\large Argument: KPL ako základ ďalších logík, najmä modálnej}}\par
+%Logika ako základ ďalších logík 
+Neexistuje jediná logika, ale množstvo logík. Niektoré logické systémy sú ale základom pre iné; základom môže, samozrejme, byť aj klasická predikátová logika. Ak uvažujeme o nadstavbe s názvom modálna kvantifikovaná logika, môže sa nám zdať klasická predikátová logika ako najvhodnejší kandidát. V čom môže nastať problém, demonštruje Bostock v \textit{Intermediate Logic}. Síce pri tom nepoužíva podmienku neprázdnosti domény (používa zákaz nič neoznačujúcich termov), no formula, ktorú vo svojom argumente používa, môže slúžiť aj na podporenie inkluzívnej logiky.\par
+%\textbf{Vieme, že v klasickej predikátovej logike s rovnosťou platí $\exists x (x = a)$. V modálnej logike existuje axióma, ktorý hovorí, že ak je $\varphi$ dokázateľné z prázdnej množiny predpokladov, je teorémou, tak je ním nutne.\\ Keďže je $\exists x (x = a)$ teorémou klasickej predikátovej logiky s rovnosťou, v modálnej logike na nej vystavanej platí: $\square(\exists x (x = a))$. To by však znamenalo, že v každom možnom svete -- sémantickom koncepte modálnej logiky -- existuje niečo (označené symbolom $a$). Predstaviť si možný svet bez niečoho, čo sa nachádza napríklad v tomto svete \textbf{[(svet bez tejto bakalárskej práce)]}, sa však nezdá byť problematické. V extrémnom prípade dokážeme určite pripustiť aj taký možný svet, v ktorom nič neexistuje.}\par 
+V modálnej logike nájdeme axiómu, ktorá hovorí, že ak je formula $\varphi$ dokázateľná z prázdnej množiny predpokladov, inými slovami, je teorémou, je ňou nutne \parencites[]{sep-logic-modal}. Taktiež platí, že v klasickej predikátovej logike s rovnosťou je tvrdenie $\exists x ( x = a)$ teorémou. To znamená, že v modálnej logike vystavanej na klasickej predikátovej logike, by platilo tvrdenie: $\square(\exists x (x = a))$.\par
+To však znamená, že v každom možnom svete\footnote{Sémantický koncept modálnej logiky. Viď viac Garson 2023.} existuje objekt, ktorý je označený termom $a$.
+%Predstaviť si však svet, v ktorom niečo, čo síce je prítomné v iných svetoch, no v nejakom konkrétnom chýba, sa nezdá byť problematické. Veľmi jednoducho si dokážeme napríklad predstaviť svet, v ktorom neexistuje táto bakalárska práca.\par
+Predstaviť si svet, v ktorom sa to, čo term $a$ ináč označuje, nenachádza nie je ťažké. Preto je prinajmenšom zvláštne čosi také považovať za nutnosť. Dokonca, ako poznamenáva Sider, v celom úsudku sme nepoužili nijaku význačnú vlastnosť pre objekt označený termom $a$. Môžeme teda celý záver zovšeobecniť a tvrdiť, že každý objekt, ktorý existuje, existuje nutne: $\forall x \square \exists y ( y = x)$ \parencites[307]{Sider2009}. 
+Tento záver však vzbudzuje oprávnené pochyby, nezdá sa byť úplne prirodzeným, ba sa možno až vzpiera našej prirodzenej intuícii. Garson v hesle Stanfordskej filozofickej encyklopédie venovanom modálnej logike píše: \uv{[\dots] zdá sa, že základnou črtou bežných predstáv o modalite je, že existencia mnohých vecí je náhodná a že v rôznych možných svetoch existujú rôzne objekty}\footnote{V origináli \uv{[\dots], it seems a fundamental feature of common ideas about modality that the existence of many things is contingent and that different objects exist in different possible worlds.}} \parencites[vlastný preklad][]{sep-logic-modal}.\par 
+Práve to je Bostockov argument. Tvrdí, že skôr, než by sme museli upravovať modálnu logiku, môžeme jednoducho nahradiť jadro, okolo ktorého je vystavaná \parencites[354--355]{bostock_intermediate_1997}. Inkluzívna logika vyššie spomenuté tvrdenia zneplatní a zabráni neprirodzeným záverom. Preto sa zdá byť vhodnejším základom pre iné, komplexnejšie logické systémy.  
+
+%Chýb, ktoré spôsobuje jadro modálnej logiky pozostávajúce z klasickej predikátovej logiky, si je vedomý aj Bostock. Hovorí preto, že skôr než by sme museli upravovať modálnu logiku, môžeme jednoducho nahradiť jej podložie; stačí, ak logiku bez prázdnej domény nahradíme inkluzívnou logikou. Tá vyššie spomenuté tvrdenia zneplatňuje, a teda zabraňuje aj neprirodzeným záverom plynúcim zo spomínanej axiómy \parencites[354--355]{bostock_intermediate_1997}. 
+
+%\textbf{Bez toho, aby sme nejak upravovali modálnu logiku, môžeme jednoducho zmeniť podložie, na ktorom stojí; môžeme nahradiť exkluzívnu logiku, inkluzívnou, a zbaviť sa tak napríklad problému s tvrdením $\exists x ( x = a ) \Rightarrow \square(\exists x (x = a))$ \parencites[354--355]{bostock_intermediate_1997}[]{sep-logic-modal}.}\par
+
+Cresswell a Hughes ukazujú, že k podobnému riešeniu modálna logika už prišla; nepoužíva však iba inkluzívnu logiku, ale dokonca voľnú logiku, povoľujúcu aj prázdne termy (vo svete, kde sa zisťuje hodnota formuly): \uv{Voľná logika (teda, ako ju chápeme my, logika 'bez' existenčných predpokladov) [...] sa často považuje za vhodný spôsob, ako pracovať s kvantifikovanou modálnou logikou}\footnote{V origináli: \uv{Free logic (meaning, as we understand it, logic 'free' of existential assumptions) [\dots] is often considered the appropriate way to deal with quantified modal logic.}} \parencites[vlastný preklad,][293]{Cresswell}. Vidíme teda, že inkluzívna alebo až voľná logika môže slúžiť ako vhodný základ pre ďalšie, na nej vybudované logické systémy.
+
+
+%Prázdna doména je možná
+%\noindent\textbf{{\large Argument: Prázdna doména je možná, tak prečo nie?}}\par
+Ďalším argumentom, prečo uvažovať nad rozšírením klasickej predikátovej logiky o prázdnu doménu, je jej existencia. V teórii množín platí schéma axióm vymedzenia, ktorá hovorí, že pre každú množinu $A$ existuje množina $B$ obsahujúca práve tie prvky z $A$, pre ktoré platí nejaký výrok $\varphi$: $B \defeq \{x \in A;\text{ } \varphi(x)\}$. Ak v logike máme neprázdnu doménu, môžeme ju pomocou nejakého predikátu obmedziť. V prípade, že máme predikát, ktorý nie je pravdivý o nijakom prvku univerza, dostaneme doménu, ktorá neobsahuje nijaký prvok. Prázdna doména je rovnako uchopiteľná a vyčleniteľná z iných domén ako akákoľvek iná, $n$ prvková doména \parencites[3]{williamson_note_1999}. V situácii, keď máme logiku, venujúcu sa doménam s ľubovoľným nenulovým počtom prvkov, je na mieste skôr otázka, prečo neskúmať aj logiku prázdnej domény. Podobne argumentuje aj Bostock, keď hovorí, že hlavným dôvodom, prečo sa venovať inkluzívnej logike, je \uv{rýdza možnosť} prázdnej domény \parencites[81--82]{bostock_intermediate_1997}.\par
+
+Ukázali sme si viaceré argumenty, prečo je pestovanie inkluzívnej logiky dobrým nápadom. Napriek tomu existuje veľké množstvo autorov, ktorí sa vo svojich prácach nevenujú inkluzívnej logike, a majú na to dobré dôvody. V nasledujúcej časti si predostrieme niekoľko argumentov, prečo môže byť vhodnejšie podmienku neprázdnosti domény diskurzu neporušovať, a pracovať iba s exkluzívnou logikou.
+
+\subsubsection{Argumenty proti inkluzívnej logike}
+Oliver a Smiley v \textit{Plural Logic} okrem iného skúmajú názory na prázdnu doménu vo viacerých klasických učebniciach logiky. Výsledok svojho bádania zhŕňajú úsečným a vtipným vyjadrením o troch druhoch názorov na túto tému: \uv{Čo teda hovoria učebnice o prázdnej doméne? Existujú tri názorové prúdy. Je to podivnosť, ktorú je najlepšie ignorovať; je to čudo, ktorému je lepšie sa vyhnúť; prináša vážne technické komplikácie, ktoré je lepšie prenechať iným}\footnote{V origináli: \uv{What, then, do the textbooks say about the empty domain? There are three schools of thought. It is a curiosity, best ignored; it is a freak, best avoided; it introduces serious technical complications, best left to others.}} \parencites[vlastný preklad,][185]{oliver_plural_2016}. Kam každým z tých prívlastkov mieria, je po prednesení komplikácií so sémantikou v prázdnej doméne už skoro zjavné; podobné názory sa budú objavovať aj v argumentoch proti inkluzívnej logike, ktoré teraz prednesieme.\par
+
+%\noindent\textbf{{\large Argument: Quine -- nepraktické + jednoducho to ad hoc pridám k exkluzívnej}}\par
+
+Jedným z najzávažnejších argumentov proti zavedeniu prázdnej domény je pragmatickosť. Operovať v neprázdnych doménach je jednoduché; postup ohodnocovania formúl alebo iné logické procesy sa v zásade nelíšia. Formula v doméne s akýmkoľvek nenulovým počtom prvkov môže byť bez problémovo vyhodnotená rovnakým postupom ako v inej doméne rozdielnej kardinality. Jediná doména, ktorá kladie odpor, je prázdna. Mnohé formuly, ktoré sú pravdivé vo všetkých ostatných doménach (napríklad $\exists x (x = x)$), v nej svoju pravdivosť strácajú. Tieto formuly sú ale v logike považované za užitočné, takže strata ich platnosti nie je príliš žiadaná. Z praktického hľadiska, aby sa udržala ich platnosť, je teda lepšie podmienku neprázdnosti domény neupravovať \parencites[177]{quine_quantification_1954}.\par
+
+Navyše, ak máme formulu, ktorá je pravdivá v neprázdnom univerze, otestovať jej pravdivosť v prázdnej doméne je jednoduché. Quine presne za týmto účelom postuluje svoju procedúru, ktorú sme spomínali už vyššie. Všetky univerzálne kvantifikácie vo formule nahradíme pravdou, všetky existenčné nepravdou, a aplikovaním klasických pravidiel o funktoroch dospejeme k verdiktu o pravde formuly v prázdnej doméne. Quine teda nie je skratkovitým odporcom inkluzívnej logiky. Nezavrháva ju. No skôr, než by ju postavil na miesto klasickej logiky, ju celú zredukuje na exkluzívnu logiku s pridaným opísaným postupom určenia pravdivosti \parencites[177]{quine_quantification_1954}.\par
+Apel na využiteľnosť logiky a s tým spojenú výčitku voči nepoužiteľnosti inkluzívnej logiky nájdeme aj v známej učebnici od Mendelsona: \uv{[\dots] interpretácia s prázdnou doménou má v aplikáciách logiky malý alebo až žiadny význam}\footnote{V origináli: \uv{[\dots] an interpretation with an empty domain has little or no importance in applications of logic}}\parencites[146]{mendelson_introduction_2015}. Ďalej hovorí, že stanovenie podmienky neprázdnosti domény je otázkou jednoduchosti -- v prípade inkluzívnej logiky sa totiž vynoria viaceré neistoty týkajúce sa definície pravdy, ktoré prácu logika zbytočne komplikujú. Zaujímavosťou je, že napriek skeptickému názoru, je vo zvyšku kapitoly tomu venovanej odprezentovaný axiomatický systém inkluzívnej logiky \parencites[146--152]{mendelson_introduction_2015}. Sider pri opise sémantiky voľnej logiky označuje, rovnako ako Mendelson, prijatie prázdnej domény za zbytočnú technickú komplikáciu, ktorej dôsledkom je strata priradenia premenných objektom univerza (funkcia $e$). Prázdnej doméne sa vyhýba aj tam, kde býva zvyčajne vítaná -- vo voľnej logike; sémantiku buduje pomocou dvoch disjunktných domén, z ktorých aspoň jedna nie je prázdna \parencites[166--167]{Sider2009}.\par
+Môžeme ešte podotknúť, že Quine neobhajuje exkluzívnu logiku iba jej väčšou využiteľnosťou a praktickosťou. Hovorí, že snaha o apriórnosť logiky a zamedzenie logickej platnosti úsudkov, ako je úsudok \ref{VxEx}, je výsledkom niekoľkonásobného nedorozumenia. Apriórnosť je pre Quinea hmlistý, nejasný a skôr prebytočný pojem. A zdesenie z logickej platnosti úsudku \ref{VxEx} je nepochopenie definície logickej platnosti. Tá je definovaná iba v rámci logiky, a jej zmysel je práve daný iba tou definíciou. Inkluzívni logici si tak zamieňajú akési dva odlišné významy tohto pomenovania a prenášajú nárok na analytickosť a apriórnosť z toho svojho pojmu na ten, ktorý je definovaný v logike \parencites[160--161]{QuineLPV}. \par
+
+%\noindent\textbf{{\large Argument: Hailperin -- znemožňuje to najbežnejšie odvodzovacie pravidlo modus ponens}}\par
+Jedným z argumentov obhajujúcich inkluzívnu logiku bola jej všeobecnosť. Závery, ku ktorým pomocou nej prídeme, sú určite platné, pretože nepredpokladajú existenciu ničoho. Môžeme ju preto použiť všade, aj v doménach, ktoré nie sú prázdne. Iný pohľad na v podstate podobný nárok všeobecnej uplatniteľnosti predstavuje Smith. Ako zástanca exkluzívnej logiky si je vedomý, aký silný nástroj to je. Smith si všíma, že väčšinu úvah vykonávame už tak s presupozíciou existencie objektov, o ktorých uvažujeme. Ak chceme logiku, ktorá je použiteľná pri každej našej úvahe, nemusíme siahať po inkluzívnej, stačí nám tá klasická. Odmenou za zotrvanie s ňou nám bude udržaná platnosť štandardných odvodzovacích pravidiel \parencites[329--332]{Smith2020}.\par
+
+Medzi pravidlá, ktoré v inkluzívnej logike neplatia, no sú ináč hojne a plodne používané, patrí aj najznámejšie odvodzovacie pravidlo logiky \textit{modus ponens}. Toto pravidlo má formu: $\varphi$, $\varphi \Rightarrow \psi$  /  $\psi$, čo slovami môžeme vyjadriť ako: \uv{platí $\varphi$}, \uv{platí 'ak $\varphi$, tak $\psi$'}, \uv{preto platí $\psi$} \parencites[30, 157]{svejdar_logika_2002}.\par
+
+%\footnote{Keďže interpretácia voľných premenných nemusí byť celkom jasná, čitateľa môže upokojiť, že k podobnému záveru sa dá dospieť aj pomocou uzavretých formúl:\par\hspace{\parindent} 1. $\forall y \exists x F(x) \Rightarrow \exists x F(x)$ Inštancia axiomatickej schémy PL $\forall \gamma  \varphi \Rightarrow \varphi$\par\hspace{\parindent} 2. $\forall y \exists x F(x)$  Teoréma v \textbf{E} \par\hspace{\parindent} 3. $\exists x F(x)$ Modus Ponens 1, 2; \parencite[545]{hochberg}}  NA EXISTS X FX
+
+
+Keďže podľa klasickej sémantiky sú otvorené formuly v inkluzívnej logike pravdivé, je pravdivá aj dvojica formúl $F(x)\Rightarrow F(x)$, $(F(x)\Rightarrow F(x))\Rightarrow(\exists x F(x))$. Z nich práve vďaka pravidlu modus ponens vyplýva záver $\exists x F(x)$.
+Ak máme dve pravdivé premisy, na ktoré aplikujeme modus ponens, mali by sme dostať pravdivý záver. Ako sme si však už ukázali formula $\exists x F(x)$ nie je v prázdnej doméne pravdivá. Inkluzívna logika, zdá sa, zneplatnila najzvyčajnejšie odvodzovacie pravidlo \parencites[197]{hailperin_quantification_1953}[78]{leblanc_open_1969}[107]{mostowski_rules_1951}[5]{williamson_note_1999}.\par 
+Tohto defektu si ale sú vedomí aj tí, ktorí inkluzívnu logiku zastávajú. Mostowski, ktorého systém povoľuje voľné premenné, zachraňuje modus ponens drobnou úpravou. Klasickú formuláciu zužuje pridaním tretej podmienky na aplikáciu pravidla: $\varphi$, $\varphi \Rightarrow \psi$, všetky voľné premenné vo $\varphi$ sú voľné aj v $\psi$ / $\psi$. Vďaka jeho modifikácii už nie je možné na premisy $F(x)\Rightarrow F(x)$, $(F(x)\Rightarrow F(x))\Rightarrow(\exists x F(x))$ aplikovať modus ponens, pretože vo $\varphi = F(x)\Rightarrow F(x)$ existujú voľné premenné, ktoré sa v $\psi = \exists x F(x)$ nevyskytujú voľne. Hailperin k tomuto problému pristúpil ináč, vo svojom článku sa pokúsil o vytvorenie inkluzívnej teórie kvantifikácie, v ktorej by fungovalo pôvodné znenie pravidla modus ponens. Aby to dosiahol, prijíma Quineov pohľad na kvantifikáciu a zakazuje otvorené formuly. Tým sa mu darí udržať pravidlo modus ponens bez zmeny \parencites[197--198]{hailperin_quantification_1953}. Modus ponens bez zmeny si udržuje aj Mendelson \parencites[143]{mendelson_introduction_2015}.\par
+
+Vznikajú tu ale aj iné problémy. Hochberg pomocou nižšieho uvedeného dôkazu ukazuje, aké technické komplikácie nastanú, ak ponecháme možnosť otvorených formúl a zároveň pripustíme Quineovu procedúru na určenie pravdivosti kvantifikovaných formúl:
+
+\begin{usudok}[H]
+\refstepcounter{usudokfig}
+\begin{logicproof}{2}
+	(\forall x \neg P(x))\Rightarrow \neg P(x) & Inštancia axiomatickej schémy PL\\
+	\neg\neg P(x) \Rightarrow \neg\forall x \neg P(x) & Transpozícia 1\\
+	P(x) \Rightarrow \exists x  P(x) & Ekvivalentná úprava 2\\
+	\forall x P(x) \Rightarrow P(x) & Inštancia axiomatickej schémy PL\\
+	\forall x P(x) \Rightarrow \exists x P(x) & Tranzitivita implikácie 4, 3\\
+	\forall x P(x) & Pravdivá formula v prázdnej doméne\\
+	\exists x P(x) & Modus Ponens 5, 6
+\end{logicproof}
+\captionsetup{labelformat=usudok}
+\label{hochbergInvalid}
+\caption{Ukážka validného úsudku v KPL s neplatným záverom v prázdnej doméne \parencites[544]{hochberg}.} 
+\captionsetup{labelformat=default}
+\end{usudok}
+%TU TEN DOKAZ JE DOLE 
+
+\noindent Záver úsudku \ref{hochbergInvalid} je nepravdivý, napriek tomu, že používa klasické úpravy či odvodzovania. To znamená, že niektorý z postupov, nie je v inkluzívnej logike validný. Sú to prvky výrokovej logiky (kroky 2, 5, 7) alebo typické ekvivalencie $p \iff \neg\neg p$ a $\neg \forall x \neg P(x) \iff \exists x P(x)$ (krok 3), alebo axiomatická schéma $\forall \gamma  \varphi \Rightarrow \varphi$ (kroky 1, 4), alebo dokonca celá myšlienka, že klasické inferenčné metódy udržujú pravdivosť \parencites[544]{hochberg}.\par
+
+%\noindent\textbf{{\large Argument: Hochberg -- ako Quine + filozoficky vyprázdnený pojem}}\par
+
+Veľké množstvo výhrad voči inkluzívnej logike je založených na pragmatickosti, tradícii a technických komplikáciách, no existujú aj zaujímavejšie, nečakané výhrady. Medzi také určite patrí výčitka Hochberga. Ten prázdnu doménu alebo prázdne univerzum považuje za filozoficky prázdny pojem. Hochbergov názor na prázdnu doménu sme podali pri pojednávaní o kvantifikácii v prázdnom univerze. Poznamenáva, že kvantifikátory sa správajú ako pravdivostné funkcie s hodnotami v tabuľke 1. Všetky zvláštnosti spojené s prázdnou doménou podľa neho smerujú k trom záverom -- k vyprázdnenosti pojmu prázdne univerzum, k vyprázdnenosti otázky interpretácie formúl v prázdnom univerze, k prázdnote Quineovej procedúry. Celý záujem o logiku prázdnej domény Hochberg pripisuje veľkému úspechu prázdnej množiny v neprázdnych doménach; v nich majú, domnieva sa Hochberg, nezastupiteľnú úlohu, tá sa ale stráca, ak sa stane doménou \parencites[545]{hochberg}. Treba ale priznať, že jeho článok je stručný, preto nie je celkom isté, čím svoje odvážne tvrdenia podporuje.\par
+
+Ukázali sme si mnohé dôvody, pre ktoré exkluzívna logika asi vždy zostane tou populárnejšou voľbou. Sú medzi nimi dôraz na využiteľnosť v ďalšom matematickom bádaní, nesmierne množstvo vzniknutých technických komplikácií, nie vždy potrebná snaha zbaviť sa všetkých existenčných predpokladov či filozofická nezmyselnosť konceptu prázdnej domény.
+
+\subsection{Zhrnutie}
+
+V tejto časti práce sme sa venovali vplyvu podmienky neprázdnosti domény na sémantiku predikátovej logiky. Ukázali sme si, akú úlohu táto požiadavka zohráva, a aké následky má jej nedodržanie. V úvode sme aplikovali pravidlá sémantiky klasickej predikátovej logiky na formuly v prázdnej doméne. Porovnali sme jazyky dvoch druhov logík -- inkluzívnej a exkluzívnej (klasickej) -- a ukázali ako k nim pristupujú rôzni autori. Prišli sme k záverom, že inkluzívna logika neobsahujúca nič neoznačujúce mená nemôže obsahovať nijaké konštanty. Taktiež všetky predikáty arity $n > 0$ spolu s funkčnými symbolmi majú rovnakú realizáciu. Ukázali sme, akým spôsobom sa dá v inkluzívnej logike napriek absencii indivíduových konštánt narábať aspoň s premennými (napríklad za pomoci Williamsonom modifikovanej funkcie $e_\varphi$). Zaujímavým momentom nášho skúmania bolo správanie otvorených a uzavretých formúl pri interpretácii v prázdnej štruktúre \textbf{E}. Interpretácia otvorených formúl pomocou klasickej sémantiky vyústi do ich súčasnej pravdivosti a nepravdivosti. Ich interpretácia však nie je úplne jasná ani v klasickej logike, a tak ich mnohí autori nepoužívajú (medzi nich sa rádi napríklad Quine). Podrobnejšie sme sa teda venovali uzavretým formulám -- rozlíšili sme dva rôzne prístupy k prázdnej kvantifikácii a odvodili sme procedúru určovania pravdivosti neprázdno kvantifikovaných uzavretých formúl.\par
+Zvyšok pasáže o prázdnej doméne sme venovali argumentom za a proti inkluzívnej logike. Ako najdôležitejší argument za inkluzívnu logiku sme uviedli snahu o čistotu logiky, ako ju naznačil Russell v citáte z úvodu práce. Ostatné argumenty sa snažili obhájiť inkluzívnu logiku ako vhodnejší základ pre pokročilé logické systémy či vhodnejší nástroj na ohodnocovanie úsudkov než exkluzívna logika. Uvažovať prázdnu doménu by logika mala aj kvôli jej prostej možnosti -- prázdna doména je dobre definovaná, a tak sa jej môžeme venovať.\par
+Argumenty proti inkluzívnej logike boli viaceré. Ukázali sme názory na jej malú využiteľnosti v hlbšom matematickom bádaní, uviedli sme významné technické komplikácie, ktoré pri jej používaní vznikajú, a poznamenali sme, že nie vždy sa skutočne chceme a potrebujeme zbaviť všetkých existenčných predpokladov. Taktiež sme uviedli Hochbergovo zaujímavé spochybnenie filozofickej zmysluplnosti konceptu prázdnej domény.\par
+V druhej polovici práce sa budeme venovať voľným logikám. Tie okrem prázdnej domény povoľujú aj prázdne termy (nič neoznačujúce mená). Sú teda prirodzeným vyústením rozšíreného záujmu o prázdnu doménu v predikátovej logike prvého rádu.
+
+
+\pagebreak
+\section{Voľné logiky}
+\label{flogics}
+
+% Úvod
+% 1.1 Kontext a Motivácia
+% 1.2 Ciele práce
+% 1.3 Rozsah a Obmedzenia
+
+% Voľná logika všeobecne
+% 2.1 Čo je voľná logika?
+% 2.2 Voľná logika vs. Voľné logiky
+% 2.3 Rozdiely oproti logike prvého rádu (FOL) a FOL s prázdnymi doménami
+% 2.4 Historický vývoj voľných logík
+
+% Semantika voľných logík
+% 3.1 Definície a ich porovnanie s FOL semantikou
+% 3.2 Semantika s viacdennými doménami
+
+% Typy voľných logík
+% 4.1 Pozitívna voľná logika
+% 4.2 Negatívna voľná logika
+% 4.3 Neutrálna voľná logika
+% 4.4 Vety platné len v konkrétnych typoch voľných logík (ak je to vhodné a zmestí sa)
+
+% Aplikácie voľných logík
+% 5.1 Logika fikcie
+% 5.2 Logika kompilácie počítačových programov a práca s nedenotujúcimi matematickými termínmi (napríklad, 1/0)
+%5.3 TM -- Bencivenga
+
+% Zhrnutie a Záver
+% 6.1 Rekapitulácia kľúčových zistení
+% 6.2 Príspevky práce
+% 6.3 Návrhy pre budúce výskumy
+
+\subsection{Úvod}
+
+%Druhá časť tejto bakalárskej práce je venovaná voľnej logike. Voľná logika na rozdiel od klasickej predikátovej logiky nevyžaduje, aby každý term niečo označoval \parencites[]{sep-logic-free}. V predchádzajúcom oddiele práce sme sa venovali logike, ktorá povoľuje interpretácie aj v prázdnom univerze. Skonštatovali sme, že jazyk takéhoto systému nemôže obsahovať nijaké indivíduové premenné, pretože by nemali čo označovať. Rozšírením logiky aj o nič neoznačujúce termy túto podmienku už nepotrebujeme. Dostávame teda logiku, ktorá nemá niektoré problematické ontologické záväzky ako exkluzívna logika a pri tom môže obsahovať menná vecí. Spojením inkluzívnej a voľnej logiky dostávame univerzálne voľnú logiku.\par
+%vzťah inkluzźivnej a voľnej logiky\par
+Voľná logika predstavuje výrazný odklon od systému klasickej logiky. Ponúka prepracovaný rámec, ktorý rieši problémy spojené s prázdnymi termami a inými nereferujúcimi výrazmi. V predchádzajúcom oddiele práce sme sa venovali logike, ktorá povoľuje interpretácie aj v prázdnom univerze. Skonštatovali sme, že jazyk takéhoto systému nemôže obsahovať nijaké indivíduové premenné, pretože by nemali čo označovať. Rozšírením logiky aj o nič neoznačujúce termy túto podmienku už nepotrebujeme. Dostávame teda logiku, ktorá nemá niektoré problematické ontologické záväzky ako exkluzívna logika a pri tom môže obsahovať mená vecí. Spojením inkluzívnej a voľnej logiky dostávame univerzálne voľnú logiku.\par
+V tejto časti práce sa pokúsime podať ucelený prehľad voľnej logiky. Najprv sa budeme venovať voľnej logike všeobecne. Predstavíme si jej teoretický základ, filozofické predpoklady a krátku históriu. Následne sa budeme venovať rôznym druhom sémantík a prístupom k nim, ktoré sa bežne vyskytujú v odbornej literatúre. Po teoretickom výklade sa pozrieme na rôzne praktické využitia voľných logík. Preskúmame, ako sa dá voľná logika využiť v teórii určitých popisov, a v čom sa jej prístup odlišuje od klasického poňatia. Potom uvidíme, ako sa dá voľná logika využiť v logike fikcie a pri definovaní parciálnych a nestriktných funkcií. Nakoniec predstavíme jej využitie v teórii množín.
+
+\subsection{Voľná logika všeobecne}
+% 2.1 Čo je voľná logika? Lambert, Nolt (SEP:free log) sep-logic-free, Bencivenga Bencivenga1990 (Free from what?), Bencivenga2002 (Free logics)
+Pomenovanie voľná logika prvýkrát použil Lambert v roku 1960. Pričom prívlastkom voľný chcel vyjadriť jej najvýznačnejšiu vlastnosť -- nezávislosť v otázkach existencie a neprítomnosť existenčných predpokladov (angl. \textit{free of existence assumptions}) \parencites[123]{LambertPhi}.
+Definovať ju môžeme nasledovne: Voľná logika je neklasická logika (s rovnosťou alebo bez), ktorej termy nemusia byť realizované v doméne diskurzu. To znamená, že môžu označovať rovnako existujúce ako aj neexistujúce indivíduá alebo nemusia označovať vôbec nič. Na rozlíšenie tých termov, ktoré označujú prvky domény, od tých, ktoré nie, sa vo voľnej logike často používa existenčný predikát $\text{E}!$. Kvantifikátory v takejto teórii sú interpretované klasicky, objektuálne, ako sme si ukázali vo výrazoch \ref{model(exists)}, \ref{model(forAll)}. Slovník a syntax voľnej logiky sú rovnaké ako v klasickej logike. Voľná logika patrí medzi neklasické logiky práve pre svoju schopnosť pracovať s termami, ktoré nič neoznačujú \parencites[9]{Bencivenga1990}[148]{Bencivenga2002}[1095]{bencivenga_jaskowski}[2]{Morscher2001}[1024]{Nolt2007}{sep-logic-free}[290]{Priest_2008}.\par
+
+% 2.3 Rozdiely oproti logike prvého rádu (FOL) a FOL s prázdnymi doménami 
+%V pasáži o sémantike inkluzívnej logiky sme videli, že  (kvantifikácia v prirodzenom jazyku nemá existenčné predpoklady moc a ani termy. preto je bližšia prirozdenému jazyku)
+
+
+
+Hlavným cieľom voľnej logiky je eliminovať zvyšné existenčné predpoklady v klasickej predikátovej logike \parencites[123]{LambertPhi}[202]{Lehmann2002}[1]{Morscher2001}[290]{Priest_2008}. Snaží sa to dosiahnuť tým, že si plne uvedomuje rozdiel medzi singulárnou a všeobecnou existenciou, ako ju definoval Leonard, a usiluje sa predísť predčasnému postulovaniu ktorejkoľvek z nich. Ďalším dôvodom, pre ktorý je vhodné venovať sa voľnej logike, je jej bližšia spriaznenosť s prirodzeným jazykom. V ňom sú tvrdenia, ktoré obsahujú nič neoznačujúce mená, veľmi bežné. V prípade reglementácie v klasickej logike by ich prepis pomocou termov predpokladal ich existenciu, preto sa často nahrádzajú určitými opismi. Tie ale v prirodzenom jazyku nevidíme. Možnosť používať priamo mená neexistujúcich vecí aj v logike sa zdá byť v tesnejšej blízkosti s naším uvažovaním a jazykom \parencites[150]{Bencivenga2002}.\par
+
+Vhodným príkladom na to je očividne pravdivá veta, ktorú prezentuje Nolt: \uv{Ne\-po\-zo\-ru\-je\-me nijaký pohyb Zeme vzhľadom k éteru.}\footnote{V origináli: \uv{We detect no motion of the earth relative to the ether.}} Pokiaľ by sme sa ju pokúsili formalizovať v klasickej predikátovej logike, dospeli by sme pre neexistenciu éteru k jej nepravdivosti. Zjavne ale vidíme, že táto veta má byť pravdivá, aj keď éter neexistuje. Voľná logika dokáže zrejme byť šikovnejším nástrojom na prácu s niektorými argumentami \parencites{sep-logic-free}.\par
+
+% 2.2 Filozofické dôvody pre voľnú logiku; Lambert
+
+% 2.4 Voľná logika vs. Voľné logiky
+Voľná logika nie je jednotná. Tento fakt je dobre vidieť aj vďaka tomu, že sa veľmi často hovorí o voľných logikách a nie o jednej voľnej logike. Jednotlivé voľné logiky sa líšia v tom, ako pristupujú k priraďovaniu pravdivosti výrokom pojednávajúcim o entitách, ktoré neexistujú alebo ležia mimo doménu diskurzu. Poznáme pozitívnu, negatívnu a neutrálnu voľnú logiku \parencites[2]{Morscher2001}{sep-logic-free}[290, 293]{Priest_2008}. 
+Ďalším možným delením voľných logík je rozdelenie podľa prístupu k sémantike -- sémantika s parciálnou funkciou realizácie $r$, sémantika s vonkajšou a vnútornou doménou, sémantika so supervaluáciou.
+Všetky tieto druhy voľných logík si predstavíme v časti \ref{flsem} venovanej sémantike \parencites[14]{Bencivenga1990}[11]{Morscher2001}.\par
+%Ďalším možným delením sémantík voľných logík je delenie na sémantiky s parciálnou alebo totálnou funkciou $r$ a $e$, sémantiky s vonkajšou a vnútornou doménou, sémantiky so supervaluáciou.\par
+
+% 2.5 Historický vývoj voľných logík, v krátkosti -- 3 vety. Morscher2001
+I keď voľná logika vznikla oficiálne až v druhej polovici dvadsiateho storočia, jej náznaky môžeme zaznamenať už skôr. Dá sa povedať, že jej predchodcom bola práve v prvej časti skúmaná inkluzívna logika. O tú, aby udržal logickú čistotu, vyjadril záujem už Russell, ako sme videli v citáte z úvodu tejto práce \parencites[152--155]{Bencivenga2002}[1]{Morscher2001}[]{sep-logic-free}. Podľa Bencivengu, prvú inkluzívnu a voľnú logiku vytvoril (aspoň implicitne) Jaśkowski v roku 1934 \parencites[]{bencivenga_jaskowski}[27]{Morscher2001}. Skutočnej voľnej logike, i keď bez tohto pomenovania, sa venuje až Leonard v článku \textit{Logic of Existence}. Svoj názov a presnejšiu definíciu dostáva až o štyri roky neskôr \parencites[]{sep-logic-free}[304--305]{Priest_2008}. Treba ešte podotknúť, že voľné logiky nemusia byť nutne inkluzívnymi. Nolt ale žartovne poznamenáva, že pre voľných logikov je charakteristická rojčivá \uv{romantickosť} založená na nevôli strpieť čo i len najmenší existenčný predpoklad, a ochote znášať divoké dôsledky možnosti prázdnoty;  preto sú voľné logiky často aj inkluzívne \parencites[1026]{Nolt2007}.
+
+
+\subsection{Sémantika}
+\label{flsem}
+%Najprv partial/total, dual-domain, supervaluacia; potom negativna, pozitivna, neutralna
+V tejto pasáži sa budeme venovať sémantike voľnej logiky. Ukážeme si, v čom sa líši od sémantiky klasickej predikátovej logiky, a v čom sa s ňou zhoduje. Taktiež si predstavíme tri rôzne prístupy k sémantike a ich aplikáciu v tých voľných logikách, kde sa používajú najzvyčajnejšie.\par
+
+Základnou otázkou pri budovaní sémantiky voľnej logiky je zjavne rozhodnutie o tom, akú pravdivostnú hodnotu majú tie tvrdenia, ktoré obsahujú prázdne termy \parencites[31]{Bencivenga1981}. Sémantika voľnej logiky je do veľkej miery totožná s definíciami uvedenými v časti \ref{sem} o sémantike klasickej predikátovej logiky. Tak ako aj v prípade klasickej logiky základným sémantickým konceptom je štruktúra \textbf{D}. Teraz však nemusí ísť už iba o usporiadanú dvojicu nosnej množiny $D$ a funkcie realizácie $r$. Vo voľnej logike sa totiž často používa štruktúra pozostávajúca z trojice -- dve nosné množiny $D_{\text{I}}$, $D_{\text{O}}$ a funkcia $r$. Tomuto prístupu k sémantike sa budeme venovať v nasledujúcej časti o pozitívnej voľnej logike. K ďalším podobnostiam s klasickou logikou patria aj definície spĺňania zložených výrazov s bežnými konektormi a negáciou (výrazy \ref{model(neg)}--\ref{model(alebo)}) alebo definície pravdivosti \parencites[11]{Morscher2001}[]{sep-logic-free}[290]{Priest_2008}.\par
+Samozrejme, vo voľnej logike je aj nemalé množstvo definícií, ktoré sú odlišné od ich náprotivkov v klasickej logike. Ide najmä o definície realizácií jednotlivých tried symbolov a spĺňania atomickej formuly. Rovnako k významným definíciám patrí realizácia pre voľnú logiku dôležitého predikátu existencie $\text{E}!$ a relácie identity. Tieto definície sú však odlišné v jednotlivých voľných logikách, preto o nich pojednáme priamo v im venovaným častiach \parencites[]{sep-logic-free}.\par
+Prístupy k predikátu $\text{E}!$ sú dva. Tento predikát môžeme považovať buď za primitívny symbol jazyka voľnej logiky, alebo ho môžeme definovať. Najčastejšie sa ako definícia uvádza $\text{E}!t \defeq \exists x (x = t)$ \parencites[38]{Bencivenga1981}[137]{Bencivenga2002}[23--26]{LambertE!}[]{sep-logic-free}.\par
+%Nemalé množstvo definícií vo voľnej logike, samozrejme, definície sú však odlišné a závisia od toho, ktorý druh voľnej logiky používame, a ktorý prístup k sémantike voľnej logiky sme si zvolili. Medzi závislé definície patria interpretácie atomických formúl, pre voľnú logiku dôležitý predikát existencie $\text{E}!$ a vzťah identity.\par
+
+%Najprv si uvedieme to, čo je spoločné pre tri vyššie menované druhy voľných logík. Pozrieme sa pri tom aj na tri rôzne prístupy k sémantike: jednodoménová sémantika s parciálnou funkciou realizácie $r$, dvojdoménová sémantika, supervaluácie. Následne v jednotlivých častiach venovaných trom voľným logikám pomenujeme vzájomné rozdiely v definíciách.\par
+
+%nároky na r sú síce rôzne, keď ide o r(t), ale pre iné symboly (P, F) je definované rovnako.\par
+
+
+%Najprv sémantika obecne, jednotlivé časti budú obsahovať iba pozmenenie menených definícií.\par
+%Najprv: sémantika totálnej alebo parciálnej $r$. Potom: dualdomain. Nakoniec supervaluácie.\\
+%Klasické pravidlá sémantiky týkajúce sa spĺňania základných binárnych konektorov (výrazy \ref{model(neg)}--\ref{model(alebo)}) platia aj vo voľnej logike. Pre jednotlivé druhy logík sú ale rôzne definície spĺňania základnej atomickej formuly, $\text{E}!$ a negácie formuly (ČO JE $\text{E}!$). Pre rôzne druhy voľných logík sú zaužívané odlišné prístupy k sémantike, avšak nie sú s nimi spojené napevno/nutne. V tejto práci sa ale budeme držať zaužívaných priradení a v prípade pozitívnej logiky si ukážeme dvojdoménový prístup, v prípade negatívnej jednodoménový s parciálnym $r$ a v prípade neutrálnej supervaluácie definované van Fraassenom.
+
+
+
+\subsubsection{Pozitívna voľná logika} %Leeb Antonelli
+
+%1. povoľuje hovoriť o non-denoting terms pravdivo\\
+%2. sémantika pomocou dvoch domén (najčastejšie -- tá ale môže slúžiť aj pre iné druhy voľných logík)\\
+%3. doménaO obsahuje práve tie prvky, ktoré sú neexistujúce (non-denoting, ono sú denoting ale tá vec nie je v Din, čiže je neexistujúca. Def exist = byť vo vnútornej doméne)\\
+%4. Z toho plynie potom aj to, že r(E!) = X subset of Dout. A neni to hocijaky subset, ale práve celé Din\\
+%5. Predikát identity funguje aj pre tie == ktoré nič neoznačujú. \\
+%6. Vx ide cez X in Din, pretoze, ako som povedal, kvantifikatory si zanechavaju svoju existencnu naloz\\
+
+
+Pozitívna voľná logika (angl. \textit{positive free logic}) povoľuje, aby niektoré atomické formuly, ktoré obsahujú nič neoznačujúce termy, ale nemajú tvar $\text{E}!t$, boli pravdivé. To znamená, že neexistujúce objekty môžu spĺňať rôzne atomické formuly a mať tak nejaké vlastnosti. Práve na základe tohto faktu sa táto logika nazýva pozitívnou \parencites[]{sep-logic-free}[293]{Priest_2008}.\par
+Najčastejšie sa sémantika pozitívnej logiky definuje pomocou dvojdoménovej štruktúry $\langle D_{\text{I}}, D_{\text{O}}, r\rangle$, kde $D_{\text{I}}$ a $D_{\text{O}}$ sú nosné množiny a $r$ je totálna funkcia realizácie symbolov. $D_{\text{I}}$ je vnútorná doména (index I označuje anglické slovo \textit{inner}), ktorá obsahuje existujúce objekty. Druhá, vonkajšia doména (index O označuje anglické slovo \textit{outer}) zahŕňa ostatné, neexistujúce objekty, respektíve také, ktoré označujú tie termy, ktoré nič neoznačujú \parencites[278]{Antonelli}[157]{Dumitru2015}[82]{LambertHierarchy}[270]{Lambert2017}[186]{Leeb}[221]{Lehmann2002}{sep-logic-free}[290]{Priest_2008}.\par
+Vzťah týchto domén sa naprieč literatúrou líši. Niektorí autori pokľadajú $D_{\text{I}}$ za podmnožinu $D_{\text{O}}$. Medzi takých patrí napríklad aj Nolt. V takomto prípade, ale môžeme len ťažko hovoriť o tom, že množina $D_{\text{O}}$ obsahuje iba tie objekty, ktoré neexistujú, keďže obsahuje aj množinu $D_{\text{I}}$. Priest preto hovorí o $D_{\text{O}}$ ako o množine všetkých objektov. Nolt aj Priest teda uvažujú o vzťahu množín, ktorý vidíme vyobrazený na diagrame \ref{ddInter}. Obaja pritom kladú podmienku, že, aj keď $D_{\text{I}}$ môže byť prázdna, $D_{\text{O}}$ prázdna byť nemôže \parencites{sep-logic-free}[290]{Priest_2008}. Takúto štruktúru nazýva Bencivenga Cocchiarellovou štruktúrou \parencites[164]{Bencivenga2002}.\par
+
+\begin{diagram}[H]
+\centering
+\refstepcounter{diagramFig}
+ \begin{tikzpicture}[scale=1.5]
+        % Define D_out set
+        \draw[line width=1.5pt, fill=myBlue] (0,0) ellipse (2.50cm and 1.25cm) node[right=2.25cm] {$D_{\text{O}}$};
+        % Define D_in set
+        \draw[line width=1.5pt, fill=myPink] (-0.65,0) ellipse (1.75cm and 0.8cm) node[] {$D_{\text{I}} = r(\text{E}!)$};
+\end{tikzpicture}
+\label{ddInter}
+\captionsetup{labelformat=diagram}
+\caption{Náčrt vzťahu vnútornej a vonkajšej domény podľa Priesta, Nolta a Lamberta. Platí: $D_{\text{I}} \subseteq D_{\text{O}}$}.
+\captionsetup{labelformat=default}
+\end{diagram}
+\noindent Antonelli, Dumitru, Leeb, Morscher a Simons sa naopak pridržiavajú spomínanej definície $D_{\text{O}}$ ako množiny neexistujúcich objektov. $D_{\text{O}}$ a $D_{\text{I}}$ môžu byť obe prázdne, no zároveň pre ne platí: $D_{\text{O}} \cap D_{\text{I}} = \emptyset$ a $D_{\text{O}} \cup D_{\text{I}} \neq \emptyset$. To znamená, že v univerze zloženom z dvoch domén musíme mať aspoň jedno indivíduum, ktoré je buď existujúce, alebo neexistujúce \parencites[278]{Antonelli}[157]{Dumitru2015}[186--187]{Leeb}[13--14]{Morscher2001}. Vzťah takýchto disjunktných množín môžeme vidieť vyobrazený na diagrame \ref{ddDis}, štruktúru, ktorej sú súčasťou, Bencivenga nazýva Leblanc-Thomasonovou štruktúrou \parencites[165]{Bencivenga2002}. Pokiaľ uvažujeme o $D_{\text{O}}$ z Noltovho ponímania ako o zjednotení $D_{\text{O}}$ a $D_{\text{I}}$, dostávme v podstate Priestovo uvažovanie nad $D_{\text{O}}$ ako neprázdnou množinou všetkých, existujúcich aj neexistujúcich, objektov. Ďalším zaujímavým vzťahom medzi ponímaniami vzťahov domén z diagramov \ref{ddInter} a \ref{ddDis} je, že $D_{\text{O}}$ z diagramu \ref{ddDis} je vlastne $D_{\text{O}} \setminus D_{\text{I}}$ z diagramu \ref{ddInter} \parencites[164]{Bencivenga2002}.\par
+%\textbf{[Zaujímavým prípadom vonkajšej domény môže byť jednoprvková množina, ktorá obsahuje Martinovo nulové indivíduum.... Trošku podobne o tom Bencivenga2002 s. 166--177]} \par
+
+\begin{diagram}[H]
+\centering
+\refstepcounter{diagramFig}
+ \begin{tikzpicture}[scale=1.5]
+        % Define D_out set
+        \draw[line width=1.5pt, fill=myBlue] (1.50,0) ellipse (1.25cm and 0.95cm) node[] {$D_{\text{O}}$};
+        % Define D_in set
+        \draw[line width=1.5pt, fill=myPink] (-1.50,0) ellipse (1.25cm and 0.8cm) node[] {$D_{\text{I}} = r(\text{E}!)$};
+\end{tikzpicture}
+\label{ddDis}
+\captionsetup{labelformat=diagram}
+\caption{Náčrt vzťahu vnútornej a vonkajšej domény podľa Antonelliho, Leeba, Morschera a Simonsa. Platí: $D_{\text{I}} \cap D_{\text{O}} = \emptyset$} 
+\captionsetup{labelformat=default}
+\end{diagram}
+\noindent Funkcia realizácie symbolov v dvojdoménovej sémantike je totálna -- má definovanú hodnotu pre každý znak jazyka. Preto, ak máme termy označujúce aj neexistujúce predmety, musí táto funkcia priraďovať symbolom prvky zo zjednotenej domény $D_{\text{O}} \cup D_{\text{I}}$, respektíve v prípade Priesta a Nolta z $D_{\text{O}}$. Ak budeme označovať zjednotenie týchto domén ako $D$, pre realizáciu symbolov jednotlivých termov, predikátov a funkčných symbolov platí presne to, čo sme definovali v úvode práce vo výrazoch \ref{r(c)}--\ref{e(t)}. Pre realizáciu dôležitého predikátu existencie tiež platí rovnosť $r(\text{E}!) = D_{\text{I}}$, ktorú môžeme vidieť aj v diagramoch \ref{ddInter}, \ref{ddDis}. Vyjadruje rovnosť dvoch množín -- domény existujúcich objektov a množiny všetkých prvkov $r(t)$, pre ktoré platí $\text{E}!t$ \parencites[165]{Bencivenga2002}[186--187]{Leeb}[13--14]{Morscher2001}{sep-logic-free}[290]{Priest_2008}.\par 
+Ako sme už ukázali, spĺňanie je ternárny vzťah medzi štruktúrou, formulou a ohodnotením $e$. Funkcia ohodnotenia premenných $e$ môže mať vo voľnej logike dve odlišné definície. V prípade, že je funkcia $e$ definovaná ako $e: \text{Var} \rightarrow D_{\text{O}}$, nazývame logiku $\text{E}$-logika. Ak $e$ priraďuje voľným premenným existujúce objekty ($e: \text{Var} \rightarrow D_{\text{I}}$), hovoríme o $\text{E}^{+}$-logike.\footnote{Uvedená definícia je platná iba pre dvojdoménové sémantiky. Obecne sa jednotlivé $e$ líšia v tom, či priraďujú iba existujúce, alebo aj neexistujúce objekty.} Rozdiel medzi týmito typmi logiky môžeme demonštrovať pomocou formuly $\text{E}!x$, ktorá je pravdivá pre každé $e$ iba v prípade $\text{E}^{+}$-logík. Pri uzavretých formulách tieto dve logiky splývajú \parencites[1028]{Nolt2007}[]{sep-logic-free}.\par
+Spĺňanie zložených formúl je definované rovnako ako v klasickej logike, preto sa bližšie pozrieme iba na spĺňanie atomickej formuly, atomickej formuly s predikátom $\text{E}!$ a vzťahu identity. Pravdivosť týchto formúl v štruktúre \textbf{D} pri ohodnotení premenných $e$ je definovaná týmto spôsobom:
+\begin{alignat}{3}
+    \mathbf{D} &\models&& P(t_1,\dots, t_n)[e] \iff  \langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \in r(P) \label{posAtomic} \\
+    \mathbf{D} &\models&& (E!t)[e] \iff  t^{\mathbf{D}}[e] \in D_{\text{i}} \label{posE!}\\
+	\mathbf{D} &\models&& (s=t)[e] \iff  t^{\mathbf{D}}[e] = s^{\mathbf{D}}[e] \label{posIdent}
+\end{alignat}
+\noindent Ako vidíme vo výraze \ref{posAtomic}, spĺňanie atomickej formuly je definované skoro totožne ako v klasickej predikátovej logike (výraz \ref{model(Pt)}) \parencites[187]{Leeb}{sep-logic-free}. Jediný, no o to podstatnejší, rozdiel je v tom, čo symbolizuje $r(P)$. Povedané jazykom dvojdoménovej sémantiky, v klasickej logike boli realizácie $n$-árnych predikátov definované ako podmnožiny iba na množine $D_{\text{I}}^n$. Tu sú ale definované ako podmnožiny $(D_{\text{O}} \cup D_{\text{I}})^n$, čo znamená, že môžu zahŕňať aj $n$-tice s neexistujúcimi objektami! Jeden a ten istý predikát teda môže byť pravdivý o existujúcich ako aj neexistujúcich objektoch.\par
+Spĺňanie atomickej formuly s unárnym predikátom $\text{E}!$ môžeme vidieť vo výraze \ref{posE!}. O objekte označenom termom $t$ hovoríme, že existuje práve vtedy, ak je prvkom vnútornej domény $D_{\text{I}}$. Spĺňanie identity zas vidíme v \ref{posIdent}. Výraz $s = t$ je v \textbf{D} splnený ohodnotením $e$, iba ak sú realizácie termov $s$ a $t$ identické, teda sú identickými prvkami množiny $D$ \parencites[187]{Leeb}[13--14]{Morscher2001}{sep-logic-free}. Zaujímavosťou tohoto prístupu je práve jeho schopnosť prisúdiť totožnosť aj neexistujúcim objektom. Zdanlivá nemožnosť tak učiniť totiž prekážala napríklad Quineovi: \uv{Ale aký zmysel by malo hovoriť o entitách, o ktorých sa nedá zmysluplne povedať, že sú identické samy so sebou, a že sú odlišné jedna od druhej?}\footnote{V origináli: \uv{But what sense can be found in talking of entities which cannot meaningfully be said to be identical with themselves and distinct from one another?}} \parencites[vlastný preklad,][23--24]{quineThere}. S aparátom pozitívnej voľnej logiky tento problém, zdá sa, odpadá.\par
+
+Interpretácia kvantifikátorov vo voľnej logike je, ako sme už naznačili v úvode, stále existenčne nabitá. To znamená, že rozsah hodnôt, cez ktoré bežia, nie je celá $D$, ale iba podmnožina $D_{\text{I}}$. Je teda treba pôvodné definície \ref{model(exists)}, \ref{model(forAll)} pozmeniť na: 
+\begin{alignat}{3}
+    \mathbf{D} &\models&& (\exists x\varphi)[e] \iff \exists a \in D_{\text{I}}, (\mathbf{D} \models \varphi[e(x/a)])  \label{PFLmodels(exists)}\\
+	\mathbf{D} &\models&& (\forall x\varphi)[e] \iff \forall a \in D_{\text{I}}, (\mathbf{D} \models \varphi[e(x/a)])	\label{PFLmodels(forAll)}
+\end{alignat}
+\noindent Podobne ako pri pôvodných definíciách aj tu musíme poznamenať, že povaha kvantifikátorov na pravej strane je odlišná od povahy tých naľavo. Kvantifikátory napravo sú iba jazykovými skratkami a nepatria k jazyku voľnej logiky. Kvantifikátory pozitívnej voľnej logiky teda bežia iba cez existujúce objekty.\par
+
+%\textbf{[Nijaký autor sa tomu nevenuje. Max. Nolt spomína $E^{+}$-logics a $E$-logics. Dá sa ale povedať(?): So zmenou rozsahu kvantifikátorou súvisí aj zmena funkcie $e$? Nie je to treba? Nie, lebo kvantifikátory sú už obmedzené pomocou ich definície iba nad $D_{\text{I}}$). Ak to ale aj tak obmedzím na $e: \text{Var} \rightarrow D_{\text{I}}$, tak: $\forall e (\textbf{D}\models\text{E}!x[e])$ . Ak to necham na $e: \text{Var} \rightarrow (D_{\text{O}} \cup D_{\text{I}})$, tak: $\exists e (\textbf{D}\not\models\text{E}!x[e])$. Pri pozitívnych to asi až tak neprekáža. Pri negatívnych asi viac? [Nakoniec sa tomu trochu venuje Lambert 2002 s. 82. e: Var->D]] }
+
+%\textbf{[Tá je po novom definovaná nie ako $\text{Var} \rightarrow D$, ale ako $\text{Var} \rightarrow D_{\text{I}}$. Výraz e(x/a) označuje teda také zobrazenie, ktoré priradí premennej x práve prvok a z $D_{\text{I}}$.]}
+
+%$\text{E}!t \Rightarrow \exists x \text{E}!t$
+Ako vidíme, na základe výrazov \ref{PFLmodels(forAll)} a \ref{posE!} v pozitívnej voľnej logike platí tvrdenie: $\forall x \text{E}!x$, keďže všetky hodnoty, ktoré môže premenná $x$ v tomto výraze nadobudnúť, sa nachádzajú práve v $D_{\text{I}} = r(\text{E}!)$. Rovnako platí aj tvrdenie $\exists x P(x) \Rightarrow (\text{E}!t \land P(t))$. Formula $P(t) \Rightarrow \exists x P(x)$ neplatí, pokiaľ nie je zaručená existencia objektu označeného termom $t$; Platí iba $(P(t) \land \text{E}!t)\Rightarrow \exists x P(x)$. Tieto závery sú presne v súlade s tým, čo sme už deklarovali. Kvantifikátory majú vo voľnej logike existenčný náboj.\par
+
+Voľná logika, ktorú sme doposiaľ popisovali, nám teda povoľuje mať termy označujúce neexistujúce objekty, no nepovoľuje cez tieto predmety kvantifikovať. Priest si je tohto faktu vedomý a preto zavádza vonkajšie a vnútorné kvantifikátory. Vnútorné kvantifikátory sú tie, ktoré majú v dosahu iba prvky vnútornej domény. Tieto kvantifikátory sme definovali vo výrazoch \ref{PFLmodels(exists)}, \ref{PFLmodels(forAll)}. Vonkajšie kvantifikátory by sme definovali obdobne, akurát by sme namiesto $D_{\text{I}}$ použili zjednotenie domén $D$. Priest označuje vonkajšie kvantifikátory klasicky $\forall$, $\exists$ a vnútorné $\forall^{\text{E}}$, $\exists^{\text{E}}$ \parencites[295]{Priest_2008}. Niekedy sa ale používa značenie, ktoré uvádza Nolt, $\Sigma$ ako vonkajšie $\exists$ a $\Pi$ ako vonkajšie $\forall$ \parencites[]{sep-logic-free}.\par
+Je zrejmé, že vnútorné kvantifikátory môžeme redefinovať pomocou vonkajších kvantifikátorov a predikátu existencie. Opačne tento proces ale možný nie je. Môžeme teda celú teóriu kvantifikácie vybudovať výhradne pomocou vonkajších kvantifikátorov. V takom prípade je ich klasické čítanie problematické a musí byť minimálne v prípade $\exists$ nahradené niečím iným ako \uv{existuje}. Aké čítanie by to mohlo byť nie je ale isté. Podľa Priesta je jednou z možností \uv{pre nejaké x\dots} \parencites[295--296]{Priest_2008}. Nolt navrhuje \uv{pre nejaké možné $x$\dots} a \uv{pre všetky možné $x$\dots}, ak stotožňujeme prvky vonkajšej domény s \textit{possibilia} \parencites[]{sep-logic-free}.\par
+Redefinícia vnútorných kvantifikátorov pomocou vonkajších kvantifikátorov podľa Priesta je uvedená vo výrazoch \ref{redef(exists)}, \ref{redef(forAll)}. Podobnú definíciu podávajú aj Nolt a Lambert, i keď s rozdielnym značením \parencites[82--83]{LambertHierarchy}[]{sep-logic-free}. Vidíme, že vnútorné kvantifikátory sú, ako sme už povedali, ohraničené pomocou predikátu existencie. Ich čítanie je existenčne nabité. Môžeme ich čítať napríklad ako \uv{pre nejaké existujúce $x$} a \uv{pre všetky existujúce $x$}.
+\begin{alignat}{3}
+      \exists^{\text{E}}xA &\defeq&& \exists x (\text{E}!x \land A) \label{redef(exists)}\\
+	 \forall^{\text{E}}xA &\defeq&& \forall x (\text{E}!x \Rightarrow A) \label{redef(forAll)}
+\end{alignat}
+\noindent Dvojdoménová sémantika má mnoho, najmä technických výhod. Pre totálnosť funkcie $r$ pôsobí prirodzene aj pre klasických logikov. Nič neoznačujúce termy tak vlastne niečo predsa len označujú s jediným rozdielom v tom, do akej množiny ich denotát patrí. Taktiež spĺňanie atomickej formuly je veľmi podobné tomu v klasickej logike, stačí, aby objekt, o ktorom hovoríme patril do realizácie predikátu, ktorý mu prisudzujeme \parencites[167]{Bencivenga2002}.\par 
+Napriek tomu riešenia dvojdoménovej sémantiky nemusia byť pre každého príjemné. V mnohých môžu vzbudzovať nechcený pocit prehnanej \uv{ontologickej extravagancie} či meinongianizmu \parencites[]{sep-logic-free}. Bencivenga vymenúva viaceré s tým spojené problémy. Nie je jasné, aký status majú neexistujúce objekty, ktoré sú vo vonkajšej doméne. Sú existujúce alebo iba možné, alebo nejaké iné? Zložitým problémom sa zdá byť aj ich nedostatočná definovanosť, ktorú im vyčítal aj Quine. Ako máme postupovať v prisudzovaní pravdy súdu o presnej výške Sherlocka Holmesa, pokiaľ nijaký príbeh s ním nespomína tento údaj? Ďalším problémom je povaha relácií medzi objektami dvoch druhov -- existujúcich a z vonkajšej domény \parencites[167]{Bencivenga2002}[57]{Findlay1933}. Vyvstáva teda otázka, či nie je lepšie robiť sémantiku pozitívnej logiky nejak ináč, bez dvoch domén. Jedným z takýchto prístupov voľnej pozitívnej logiky sú supervaluácie, ktoré prvýkrát formuloval van Fraassen (\citeyear{Fraassen}) \parencites[158--159]{Dumitru2015}[18]{Dvorak}{sep-logic-free}. Tým sa ale budeme venovať v časti o neutrálnej logike.\par
+
+V tejto časti sme si predstavili pozitívnu voľnú logiku a jej sémantiku. Ukázali sme si dvojdoménovú sémantiku, ktorá je pre ňu význačná, a poukázali sme na to, ako pristupujú ku vzťahu domén a kvantifikácii v nich rôzni autori. V ďalšej časti si ukážeme, v čom sa líši sémantika negatívnej logiky od definícií, ktoré sme uviedli tu. 
+
+\subsubsection{Negatívna voľná logika}
+Negatívna voľná logika (angl. \textit{negative free logic}) je dvojhodnotová logika, v ktorej je každá atomická formula s aspoň jedným prázdnym termom nepravdivá. Prvé náznaky negatívnej voľnej logiky môžeme podľa Gratzla vidieť u Aristotela, pretože tvrdí, že v prípade neexistencie Sokrata nie je pravdivé ani jedno pripísanie dvoch protichodných predikátov \parencites[13b10--20]{Aristoteles}. Negatívna logika teda zamedzuje akékoľvek pozitívne pripísanie vlastností neexistujúcim indivíduám, preto ju nazývame negatívnou \parencites[155]{Dumitru2015}[331--332]{Gratzl2010}[225]{Lehmann2002}[2]{Morscher2001}[]{sep-logic-free}[293]{Priest_2008}.\par
+Na rozdiel od pozitívnej logiky, negatívna logika používa častejšie prístup jednodoménovej sémantiky s parciálnou funkciou realizácie symbolov $r$. Základom je teda štruktúra $\textbf{D}=\langle D,r\rangle$. $D$ je (potenciálne prázdna) nosná množina. Funkcia $r$ nie je definovaná pre všetky symboly termov jazyka $L$, ale len pre tie, ktoré označujú existujúce objekty. Platí teda, že pre každý term $t$ jazyka $L$ je $r(t) \in D$ alebo $r(t)$ nie je vôbec definované. Ostatné definície realizácie symbolov sú definované rovnako ako v klasickej predikátovej logike \parencites[156]{Dumitru2015}[12]{Morscher2001}{sep-logic-free}.\par
+Definície spĺňania zložených formúl sa tak ako v klasickej logike odvolávajú na spĺňanie atomickej formuly. Preto sa aj tu pozrieme iba na spĺňanie atomickej formuly obecne a so špeciálnym predikátom $\text{E}!$, a vzťah identity. Jednotlivé definície spĺňania v uvedenom poradí sú:
+
+%1. všetky non-denoting terms sú nepravdivé\\
+%2. sémantika pomocou parciálnej r --> sú/mozu byt nejake termy t, pre ktore nie je r(t) definovane\\
+%3. zaroven ale plati, ze pre Vd z D Et take, ze r(t) = d ----> (PRIEST o tom napr) kazda existujuca vec ma\ meno, ale nie kazde meno je meno existujucej veci\\
+%4. r(E!) = \{t | r(t) je definovane\}\\
+%5. predikát identity funguje iba ak sú r(t1), r(t2) definované, tzn. ak platí E!t1, E!t2\\
+ 
+
+\begin{alignat}{3}  
+    \mathbf{D} &&\models& P(t_1,\dots, t_n)[e]\iff t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e] \text{ sú definované a } \langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \in r(P)  \label{PFatomic}\\
+    \mathbf{D} &&\models&(\text{E}!t)[e]\iff t^{\mathbf{D}}[e] \text{ je definované} \label{PFE!}\\
+    \mathbf{D} &&\models&(s=t)[e]\iff t^{\mathbf{D}}[e], s^{\mathbf{D}}[e] \text{ sú definované a zároveň } t^{\mathbf{D}}[e] = s^{\mathbf{D}}[e] \label{PF=}
+\end{alignat}
+\noindent Výraz \ref{PFatomic} hovorí, že atomická formula $P(t_1,\dots, t_n)$ je pri $e$ v \textbf{D} splnená iba vtedy, ak sú pre jednotlivé symboly $t_1,\dots,t_n$ definované ich realizácie a zároveň je usporiadaná $n$-tica týchto realizácií prvkom realizácie predikátu $P$. Práve podmienkou definovanosti $r(t_\text{i})$ zabezpečíme, aby nebola pravdivá nijaká formula, ktorá obsahuje čo i len jeden nič neoznačujúci term. Výraz \ref{PFE!} vyjadruje závislosť existencie objektu označeného termom $t$ a definovanosti $r(t)$; platí, že $\text{E}!t$ je splnené práve vtedy, ak je $r(t)$ definované. Ani identita sa nespráva nijak výnimočne. Taktiež je splnená iba v prípade, že sú realizácie oboch jej členov definované a zároveň totožné \parencites[156]{Dumitru2015}[12]{Morscher2001}{sep-logic-free}.\par
+Ako vidíme, z výrazov \ref{PFatomic} a \ref{PFE!} vyplýva pravidlo negatívneho obmedzenia (angl. \textit{Negativity Constraint Rule}); pre každý predikát $P$ platí $P(t_1,\dots, t_n) \Rightarrow (\text{E}!t_1 \land \dots \land \text{E}!t_n)$. Platnosť tohto tvrdenia je vyústením požiadavky, aby všetky termy, na ktoré aplikujeme akýkoľvek predikát, niečo označovali \parencites[]{sep-logic-free}[293--294]{Priest_2008}.\par
+Tvrdenia o identite (výraz \ref{PF=}) sú v negatívnej logike existenčne nabité. Nakoľko, ak si za $P$ v pravidle negatívneho obmedzenia dosadíme reláciu $=$, vidíme, že vyžaduje, aby objekty označené jednotlivými termami existovali. Často sa ako definícia predikátu $\text{E}!$ vo voľnej logike s identitou uvádza identita so sebou samým. V negatívnej voľnej logike, ako vidíme, platí $t=t \iff \text{E}!t$ \parencites[25]{LambertE!}[]{sep-logic-free}.\par
+%\textbf{[(Aj tu, ak chceme negativnu dvojdomenu, mozeme Do = \{$a_0$\}. Potom podla martina vsetky neexistujuce objekty budu skutocne mat jediny, pre vsetky entity spolocny denotat.)]}\par
+Problémom v negatívnej voľnej logike je však to, čo sme vyčítali napríklad Martinovi, keď použil nulové indivíduum ako referent pre všetky nič neoznačujúce termy. Platí $(\neg \text{E}!t \land \neg \text{E}!s) \Rightarrow (A \Rightarrow A(t//s))$, kde A(t//s) označuje nahradenie jeden alebo viac výskytov termu $s$ termom $t$. Táto formula vyjadruje nerozlíšiteľnosť neexistujúcich indivíduí \parencites[1033]{Nolt2007}[]{sep-logic-free}. Takýto záver ale nemusí byť chcený. Najmä v prípade, ak chceme hovoriť o neexistujúcich objektoch s rôznymi vlastnosťami.\par
+Kvantifikácia v negatívnej logike je definovaná rovnako ako v klasickej predikátovej logike. To znamená, že podobne ako v pozitívnej logike objekty, ktoré sú mimo doménu diskurzu, nie sú v dosahu kvantifikátorov. Takéto obmedzenie kvantifikátorov je v súlade so zámerom zachovať ich existenčnú nabitosť, a zároveň to uchováva platnosť tvrdenia, ktoré platí obecne naprieč sémantikami voľných logík, $\forall x \text{E}! x$ \parencites[]{sep-logic-free}.\par
+
+Jednou z nevyhnutných úprav v negatívnej voľnej logike je úprava vzťahu identity. Ukázali sme, že tvrdenia, ktoré obsahujú prázdne termy, sú v tejto logike nepravdivé. To znamená, že identita nemôže byť definovaná klasicky, presnejšie nemôže byť reflexívna. Tejto vlastnosti identity zabraňujú práve tvrdenia tvaru $t = t$, kde $t$ nič neoznačuje \parencites[172]{Bencivenga2002}[127]{Pavlovic2020}[297]{Priest_2008}. V jazyku negatívnej dvojdoménovej sémantiky by identita mohla byť definovaná iba nad množinou existujúcich objektov ako množina dvojíc: $\{\langle o,o \rangle, o \in D_{\text{I}}\}$. Potom, ak $\Pi$ je vonkajší kvantifikátor, a domény sú disjunktné, platí $\forall x (x = x)$, ale nie $\Pi x (x = x)$.\par
+
+Negatívna sémantika, ktorú sme popisovali doposiaľ, považuje za nepravdivé atomické formuly s prázdnymi termami. To však znamená, že aspoň niektoré zložené tvrdenia obsahujúce prázdne termy môžu byť pravdivé. Medzi také napríklad patria $P(a) \Rightarrow \forall x \text{E}! x$ alebo $P(a) \Rightarrow P(a)$. Ak by sme chceli, aby aj tieto formuly boli nepravdivé, museli by sme stanoviť podmienku, že všetky formuly, ktoré obsahujú aspoň jeden prázdny term, budú po interpretácií v štruktúre pri ohodnotení $e$ nepravdivé. Takúto podmienku si stanovuje supernegatívna sémantika \parencites[1034]{Nolt2007}. Tá ale nie je veľmi rozšírená a okrem Nolta ju ani mnoho autorov nespomína.
+
+V tejto časti sme sa venovali negatívnej voľnej logike so sémantikou s parciálnou funkciou $r$. Ukázali sme si v čom sa odlišuje od pozitívnej logiky, a aké závery plynú z prijatia tohto druhu voľnej logiky. V ďalšej časti sa budeme venovať neutrálnej logike, ktorá pristupuje k určovaniu pravdivosti formúl s prázdnymi termami o niečo konzervatívnejšie.
+
+\subsubsection{Neutrálna voľná logika}
+Neutrálna voľná logika (angl. \textit{neutral free logic}) nepriraďuje žiadnu pravdivostnú hodnotu atomickým formulám, ktoré obsahujú aspoň jeden prázdny term. V takejto logike potom existujú formuly, ktoré nie sú ani pravdivé, ani nepravdivé. Preto hovoríme, že takáto logika má diery v pravdivostných hodnotách (angl. \textit{truth value gaps}). Neutrálne logiky teda môžeme považovať za nejakým spôsobom trojhodnotové, pretože navyše k pravde a nepravde majú tretiu, neurčenú, \uv{deravú} hodnotu \parencites[155]{Dumitru2015}{sep-logic-free}[519]{Pavlovic2023}[295, 465]{Priest_2008}.\par 
+Zatiaľ, čo si Gratzl povšimol náznaky negatívnej sémantiky u Aristotela, neutrálnu sémantiku by podľa Skyrmsa mali pripustiť všetci verní prívrženci ďalšieho významného logika: \uv{Pre prísneho Fregeovca by teda ani '$p \lor \neg p$' nemalo mať pravdivostnú hodnotu, ak '$p$' obsahuje neoznačujúci singulárny term}\footnote{V origináli: \uv{Thus for a strict Fregean, even '$p \lor \neg p$' should lack a truth value if '$p$' contains a non-designating singular term.}} \parencites[vlastný preklad,][479]{Skyrms}. Skyrms odkazuje na Fregeho neochotu pripísať pravdivostnú hodnotu vete o Odyseovi, pretože obsahuje zjavne nič neoznačujúci term \parencites[24]{frege1903}[307]{SFFL}. Neutrálna logika je teda z tohto hľadiska fregeovská.\par
+Tak ako pri ostatných typoch aj tu je základným prvkom sémantiky štruktúra $\textbf{D} = \langle D, r \rangle$, kde $D$ môže byť prázdna a $r$ je parciálna funkcia ako v negatívnej logike. Lehmann uvádza takúto definíciu priradenia pravdivostných hodnôt atomickým formulám:  
+\begin{alignat}{2} 
+    & P(t_1,\dots, t_n) && \text{ je v \textbf{D} pri $e$ pravda ak: } \nonumber \\ 
+    && & \qquad t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e] \text{ sú definované a } \langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \in r(P)  \nonumber \\ 
+    && & \text{ je v \textbf{D} pri $e$ nepravda ak: } \nonumber \\
+    && & \qquad t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e] \text{ sú definované a } \langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \notin r(P) \nonumber \\
+    && & \text{ v \textbf{D} pri $e$ nemá pravdivostnú hodnotu ak: } \nonumber \\
+    && & \qquad\text{pre nejaké } t_{i} \text{, kde } 1 \leq i \leq n \text{, } t_{i}^{\mathbf{D}}[e] \text{ nie je definované} \label{NFatomic}
+\end{alignat}
+\noindent Atomická formula je teda pravdivá práve vtedy, keď majú všetky termy definovanú svoju realizáciu a tá zároveň spadá pod predikát $P$. Formula je nepravdivá vtedy, keď jednotlivé termy majú realizáciu, ale nespadajú pod predikát. Nijaká pravdivostná hodnota nie je pripísaná atomickej formule, ak aspoň jeden z použitých termov nemá realizáciu.\par 
+%V takejto sémantike je problematické určiť pravdivostné hodnoty zložených formúl, keďže tie sa vždy odvolávajú práve na pravdivosť atomickej formuly. 
+Pokiaľ atomická formula nemá priradenú nijakú hodnotu, je ťažké určiť, akú hodnotu by mala mať komplexná formula, ktorá ju obsahuje. Dokonalým príkladom na to je hodnota negácie formuly. V dvojhodnotovej logike je jej hodnota jednoducho určiteľná -- stačí prevrátiť hodnotu negovanej formuly. V sémantike s dierami to tak jednoduché nie je. Najčastejšie sa negácii formuly bez hodnoty neprisudzuje nijaká hodnota. Pri ostatných logických konektoroch to je už ale zložitejšie. Ukážkou možných nedostatkov takejto zdržanlivosti je neochota priznať pravdivostnú hodnotu intuitívne pravdivému tvrdeniu $P(t) \lor \neg P(t)$, pokiaľ $t$ nič neoznačuje \parencites[228]{Lehmann2002}[14]{Morscher2001}{sep-logic-free}[9485]{Rami2020}[943]{Woodruff}.\par
+Obohacujúcim rozšírením tejto konzervatívnej sémantiky sú supervaluácie navrhnuté van Fraassenom. I keď neodstraňujú všetky diery v pravdivostných hodnotách, umožňujú priradiť viacerým formulám nejakú z bežných hodnôt \parencites[158]{Dumitru2015}[228]{Lehmann2002}{sep-logic-free}.
+Supervaluácie alebo nadvaluácie fungujú tak, že stanovenie pravdivostnej hodnoty formuly nie je závislé iba na klasicky definovanej interpretácii. Supervaluácia priradí výroku hodnotu pravda iba vtedy, keď všetky možné interpretácie -- priradenia referentov termom -- urobia tento výrok pravdivým; podobne to platí aj pre nepravdu. Ak však existuje aspoň jedna interpretácia, ktorá výroku priradí odlišnú hodnotu, supervaluácia mu nepriradí nijakú hodnotu. Vidíme, že aj keď supervaluácie vyplnia viaceré medzery v pravdivostných hodnotách, niektoré stále nechajú prázdne. Medzi formuly, ktoré sa stanú po zavedení supervaluácií pravdivými, patrí napríklad $\neg (P(t) \land \neg P(t))$, pretože neexistuje nijaké priradenie $t$ k objektu univerza, ktoré by túto formulu neurobilo pravdivou \parencites[20]{Dvorak}{sep-logic-free}[487]{Fraassen}. Príkladom supervaluáciou nevyplnenej diery môže byť formula $P(t)$, kde $t$ nič neoznačuje. Môžeme si totiž predstaviť, že predikát $P$ neplatí pre všetky objekty univerza. V takom prípade supervaluácia môže termu $t$ pripísať také hodnoty, ktoré nespadajú pod $P$, ale aj také, ktoré spadajú. Podľa spomínanej definície supervaluácie teda zostane výrok $P(t)$ bez hodnoty.\par
+Nolt hovorí, že supervaluácia funguje tak, že k pôvodnej jednodoménovej štruktúre skonštruujeme množiny jej doplnení. Každé z týchto doplnení funguje ako dvojdoménová štruktúra pozitívnej voľnej logiky, ktorých vnútorná doména je totožná s doménou pôvodnej neutrálnej štruktúry. Prázdne termy sú teda vo vonkajšej doméne. Supervaluácia je potom vytvorená na základe toho, akú pravdivostnú hodnotu dostane konkrétna formula naprieč všetkými týmito doplneniami \parencites[]{sep-logic-free}.\par
+Supervaluácie nie sú bez komplikácií a povoľujú závery, ktoré nie sú chcené. Nolt na to uvádza príklad formuly $P(t) \Rightarrow \text{E}!t$, ktorá nie je z hľadiska supervaluácií pravdivou. Keďže ale pri každom nadohodnotení platí, ak je pravda $P(t)$, tak je pravda aj $\text{E}!t$, je pravdivé tvrdenie o odvoditeľnosti $P(t) \vdash \text{E}!t$ \parencites[]{sep-logic-free}.\par
+Kvantifikácia v neutrálnej logike je rovnako ako v iných voľných logikách limitovaná realizáciou predikátu $\text{E}!$. To znamená, že v dosahu kvantifikátorov sú iba existujúce objekty, a tvrdenie $\forall x \text{E}!x$ zostáva pravdivé \parencites[519, 522]{Pavlovic2023}.\par 
+Existencia troch rozličných sémantík môže vyvolávať otázky, ktorú sémantiku je najlepšie zvoliť pre konkrétny problém. Supervaluačné, neutrálne sémantiky strácajú šarm logickej dvojhodnotovosti, čo môže pôsobiť neprirodzene. Pozitívne sémantiky zas vyžadujú dôkladnú snahu pri určovaní pravdivosti každého tvrdenia s prázdnym termom. Negatívne logiky tento problém riešia rýchlo, no možno až príliš jednoducho. Výber tej správnej sémantiky je teda vždy vecou danej aplikácie \parencites[1038--1039]{Nolt2007}.\par 
+John Nolt na margo voľby správnej sémantiky píše: \uv{Žiadna sémantika však nie je tá pravá pre všetky aplikácie. Pozitívna sémantika ponúka najväčšiu flexibilitu, pre ktorú má predpoklad vynikať v aplikáciách blízkych prirodzenému jazyku. Pre formálnejšie úlohy môže byť vhodným riešením zjednodušujúca reglementácia, ktorú zavádzajú negatívne alebo nevalenčné logiky. A tam, kde logiku trápia nevyhnutné medzery v pravdivostných hodnotách, môžu zmierniť škody supervalvácie}\footnote{V origináli: \uv{But no semantics is best for all applications. Positive semantics offer the greatest flexibility and so tend to excel in applications close to natural language. But for more formal tasks, the simplifying regimentation imposed by negative or nonvalent logics may fill the bill. And where unavoidable truth-value gaps eviscerate logic, supervaluations can ameliorate the damage}} \parencites[vlastný preklad,][1039]{Nolt2007}.\par 
+Vidíme, že, aby sme si vybrali tú správnu sémantiku, musíme najprv odpovedať na otázky, čo chceme skúmať, a na čom nám záleží -- v prípade jasnejšieho formalizmu, zvolíme negatívnu logiku, v prípade snahy o čo najlepšie zachytenie prirodzeného jazyka, použijeme pozitívnu logiku. Pokiaľ chceme nejaké riešenie medzi týmito extrémami a nevadia nám diery, vyberieme si neutrálnu sémantiku.\par
+V tejto časti sme sa venovali neutrálnym voľným logikám. Ukázali sme si jej úskalia spôsobené nepripisovaním pravdivostnej hodnoty niektorým tvrdeniam a ako sa im dá aspoň sčasti vyhnúť pomocou van Fraassenových supervaluácií. V nasledujúcej časti práce sa budeme venovať aplikácií voľných logík v rôznych oblastiach.
+
+
+%\begin{alignat}{3}   \mathbf{D} &&\models& P(t_1,\dots, t_n)[e]\iff t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e] \text{ sú definované a } \langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \in r(P)  \\\mathbf{D} &&\not\models& P(t_1,\dots, t_n)[e]\iff t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e] \text{ sú definované a } \langle t_{1}^{\mathbf{D}}[e],\dots, t_{n}^{\mathbf{D}}[e]\rangle \notin r(P)  \end{alignat}
+
+
+
+%- Vlastne trojhodnotová  (neurčitosť je tretia hodnota)
+%- pre non-denoting terms nevieme presne určiť / rozhodnúť o pravdivostnej hodnote, tak potom im priradíme neurčitú hodnotu a
+%- moze byt pouzita supervaluacia (van Fraassen)
+
+
+\subsection{Aplikácia voľných logík}
+
+Jeden zo známych názorov na povahu logiky hovorí, že logika je nástroj. Preto je veľmi dôležité pochopiť nie len, čo je voľná logika, ale aj na čo slúži. V tejto časti sa budeme postupne venovať štyrom aplikáciám voľnej logiky. Najprv sa pozrieme na teóriu voľných určitých popisov, ktorá rozširuje a (podľa názoru voľných logikov) napráva chyby klasickej teórie určitých popisov, ako ich definovali Russell či Frege. Ďalej sa pozrieme na logiku fikcie; vymyslený príbeh sa z definície vyznačuje používaním prázdnych termov, čo ho robí ideálnym pre použitie voľnej logiky. Parciálne funkcie nemajú definované výstupy pre niektoré vstupy, čo môžeme formulovať aj tak, že realizácia termu vytvoreného aplikáciou funkčného symbolu na nedefinovaný vstup nie je prvkom domény diskurzu. Nestriktné funkcie dokážu pracovať aj s nedefinovanými vstupmi. Oba druhy funkcií budú stredobodom pozornosti v tretej aplikácii voľnej logiky. Nakoniec sa pozrieme na najzákladnejšiu teóriu modernej matematiky -- teóriu množín. Tú možno preformulovať vo voľnej logike tak, aby neobsahovala existenčné predpoklady, čím sa dá vyhnúť niektorým známym antinómiám. Samozrejme, existujú aj ďalšie aplikácie, ktoré nie sú súčasťou tejto práce. Medzi také patrí napríklad vylepšenie sémantiky modálnej alebo meinongiánskej logiky.
+ 
+\subsubsection{Určité popisy}
+Určité popisy sú frázy, ktoré sa dajú schematicky vyjadriť pomocou tvrdenia \uv{také $x$, že $A$}, kde $A$ je formula s jedinou voľnou premennou $x$. Formálne ich zapisujeme pomocou logického operátora iota ako $\iota x A$. V klasickom, Russellovskom ponímaní nie sú určité popisy termami, ale formulami so zložitejšou štruktúrou. Tieto formuly pritom vyjadrujú existenciu a jedinečnosť objektu, ktorý danú formulu $A$ spĺňa.\par 
+Vo voľnej logike sa ale určité popisy považujú za klasické pomenovania či singulárne termy, a môžu tak na ne byť aplikované predikáty bez potreby akejkoľvek eliminácie alebo reformulácie. Z tohto dôvodu je za obecne platnú v teórii určitých popisov považovaná formula $\exists ! x (P(x)) \Rightarrow P(\iota x (P(x)))$ -- ak presne jeden objekt je $P$, tak to jedno konkrétne $x$, ktoré je $P$, je $P$. Táto formula popisuje logické správanie určitého popisu v prípade, že je naplnený -- existuje práve jeden objekt spadajúci pod rozsah predikátu $P$. Rozdielnosť jednotlivých teórií bude tkvieť v prípadoch prázdnych popisov či popisov zahŕňajúcich viaceré objekty \parencites[188]{Bencivenga2002}[69--71]{LambertHierarchy}[271--272]{Lambert2017}[19]{Morscher2001}[1040]{Nolt2007}[]{sep-logic-free}.\par
+
+Voľní logici sa o určité popisy zaujímali hneď od začiatku a snažili sa pre túto teóriu vybudovať nové základy. Podľa Bencivengu ich záujem mal najmä dva dôvody -- historický a teoretický. Historicky sú určité popisy, ako ich predstavil Russell, nástrojom, ktorý umožňoval pracovať so zdanlivo nič neoznačujúcimi menami aj klasickým logikom. Voľná logika mala teda za úlohu tento historický problém uchopiť uspokojivo svojim novým spôsobom. Teoretický záujem vyplýva z existencie nemalého počtu určitých popisov, ktoré nič nedenotujú. Tie sú pre voľnú logiku prirodzene zaujímavé \parencites[188]{Bencivenga2002}.\par
+
+%Rozdiel medzi klasickou a voľnou teóriou určitých popisov demonštruje Bencivenga na výraze \ref{wat}. Klasickí logici uznávajú platnosť oboch smerov implikácie; názory voľných logikov sú rôznorodejšie a platnosť implikácie zľava doprava (výraz \ref{LP}) neberú za samozrejmosť:
+%\begin{alignat}{3}
+%       \psi[\iota x \varphi  / y] &\iff&& \exists y (\forall x (\varphi \iff x = y) \land \psi) \label{wat}\\
+%     \psi[\iota x \varphi  / y] &\Rightarrow&& \exists y (\forall x (\varphi \iff x = y) \land \psi) \label{LP}
+%\end{alignat}
+%\noindent Blabla\par
+
+Základná formula teórie určitých popisov vo voľných logikách sa nazýva Lambertov zákon:
+\begin{alignat}{3}
+      \forall y [(y = \iota x A) \iff (\forall x (A \iff (x = y)))]\text{, kde $x$ je v $A$ voľne} \label{LambertLaw}
+\end{alignat}
+\noindent Výraz \ref{LambertLaw} vyjadruje správanie operátora $\iota$. Hovorí, že akýkoľvek objekt $o$ (priradený premennej $y$) z nosnej množiny je označený termom $\iota x A$ práve vtedy, keď všetky a len tie objekty, ktoré dosadíme za $x$ v $A$, a ktoré spĺňajú $A$, sú totožné s $o$. Pokiaľ nie je v doméne diskurzu nijaký objekt, ktorý spĺňa $A$, alebo ich je viac, výraz $\iota x A$ je prázdny. Pomocou $\iota$ môžeme teda označiť konkrétne, jediné indivíduum z množiny diskurzu, ktoré spĺňa formulu $A$. Pridaním Lambertovho zákona ku klasickým axiómam voľnej logiky dostávame minimálnu téoriu voľných popisov MFD (angl. \textit{minimal free description theory}). Minimálnou ju nazývame pre to, že o určitých popisoch hovorí iba v najmenšej možnej miere; pre existenčne nabitý charakter kvantifikácie pojednáva len o určitých opisoch, ktoré denotujú, čo necháva priestor pre veľkú variabilitu jednotlivých teórií určitých popisov \parencites[190]{Bencivenga2002}[90]{LambertHierarchy}[228]{Lehmann2002}[22]{Morscher2001}[1041]{Nolt2007}[]{sep-logic-free}.\par
+Najvýznačnejšie systémy určitých popisov sa odlišujú podobným spôsobom ako sémantiky voľnej logiky. Negatívna teória voľných určitých popisov považuje všetky formuly s popismi, ktorým sa nedarí zachytiť práve jedno existujúce indivíduum, za nepravdivé. Táto teória je blízka klasickému poňatiu Bertranda Russella. Netreba ale zabudnúť na nezanedbateľný rozdiel medzi nimi; určité popisy nie sú vo voľnej logike formami tvrdenia, ako to je u Russella, ale plnohodnotnými termami \parencites[245]{Lehmann2002}{Morscher2001}[1041--1042]{Nolt2007}[]{sep-logic-free}.\par
+Pozitívne teórie považujú niektoré tvrdenia obsahujúce prázdne popisy za pravdivé. Najprimitívnejšia pozitívna teória, ktorú Lambert nazval FD2, považuje všetky identity medzi neexistujúcimi objektami za pravdivé:
+ \begin{alignat}{3}
+	  (\neg\text{E}!t_{1} \land \neg\text{E}!t_{2}) \Rightarrow t_{1} = t_{2} \label{ChObj}
+\end{alignat}
+
+\noindent Výraz \ref{ChObj} teda vyjadruje, že ak sú dva termy prázdne, označujú totožný objekt. Pre akékoľvek dva prázdne popisy teda platí, že označujú jednu a tú istú vec.
+Lambert FD2 prirovnáva k Fregeho teórii \uv{zvoleného objektu} (angl. \textit{chosen object}). V nej tiež všetky prázdne určité popisy označujú jeden a ten istý objekt. Tu sa však obe teórie nie len stretajú, ale aj rozchádzajú. Kým Frege svoj objekt volí z univerza, Lambert si ho vyberá spomedzi neexistujúcich objektov. Obecne tak FD2 môžeme v sémantike dvoch disjunktných množín nasimulovať tak, že vonkajšiu množinu stotožníme s jednoprvkovou množinou obsahujúcou zvolený objekt, ktorý bude slúžiť ako \uv{úložisko} referencie prázdnych termov \parencites[239--240]{LambertFraassen}[188]{LambertFDT}[70]{LambertHierarchy}[242]{Lehmann2002}[22--23]{Morscher2001}[1041--1042]{Nolt2007}[]{sep-logic-free}.
+Podobné riešenie, nie síce pre popisy ale pre všetky prázdne termy, podal, ako sme ukázali v predchádzajúcej časti práce, už Martin so svojou teóriou nulového indivídua. Jeho riešenie je ale oproti Fregeho a Lambertovmu riešeniu zmätočné a plné nejasností.\par
+Lambert tvrdí, že FD2 predchádza viacerým klasickým komplikáciám s klasickou teóriou deskripcií. Ako vidíme v \ref{ChObj}, neplatnosť identity neexistujúcich popisov, ktorá bola často vyčítaná Russellovi, v FD2 nie je problémom. Podobne nie je vôbec zložité postulovať existenciu objektu označeného nejakým popisom, čo bolo zas vyčítané Fregemu. Nakoniec FD2, keďže sa jedná o teóriu voľnej logiky, odstraňuje aj existenčný import popisov, ktorý majú, keď sú považované za termy \parencites[239--240]{LambertFraassen}.\par
+Nevýhodou FD2 je ale práve jej prístup k neexistujúcim objektom či, lepšie povedané, objektu. Postulovanie jediného neexistujúceho objektu totiž môže mať neblahé dôsledky v niektorých oblastiach bádania. Pokiaľ nám nezáleží na niektorých presných priradeniach objektov, FD2 môže byť celkom dobrým nástrojom. Ak však chceme rozlišovať presne, kedy o ktorom neexistujúcom objekte hovoríme, môže byť FD2 nevhodný systém. Preto napríklad nie je FD2 často používaná pri formalizácií tvrdení prirodzeného jazyka; v ňom nám záleží na schopnosti odlišovať aj neexistujúce veci. Takéto využitie si vyžaduje skôr inú pozitívnu teóriu voľných deskripcií. Takú, v ktorej môžu byť identity medzi prázdnymi termami nepravdivé. \parencites[240]{LambertFraassen}[1042]{Nolt2007}.\par
+Je zjavné, že medzi dvoma extrémami, ktoré predstavujú MFD a FD2, existujú viaceré teórie, ktoré na platnosť tvrdení s prázdnymi popismi kladú rôzne miery obmedzení. Medzi týmito teóriami existuje určitá hierarchia. Tá je podľa Lamberta dvojrozmerná, pretože jednotlivé teórie sa líšia podľa toho, ktoré axiómy z dvoch tried axióm (P a I trieda), si berú za vlastné. P-trieda obsahuje axiómy, ktoré opisujú podmienky, za ktorých môžeme predikát $P$ pripísať entite, ktorá je označená popisom $\iota x P(x)$. I-trieda pozostáva z axióm týkajúcich sa podmienok pripísania identity \parencites[89--91]{LambertHierarchy}.\par
+Zaujímavým prípadom je aj teória FDExt. FDExt pridáva k MFD nasledujúcu axiómu:
+ \begin{alignat}{3}
+	  \forall y (A \iff B) \Rightarrow \iota x A = \iota x B \label{FDExt}
+\end{alignat}
+\noindent Výraz \ref{FDExt} hovorí, že, ak $A$ a $B$ sú koextenzívne, čiže keď všetky $d$ z domény spĺňajú $A$ práve vtedy, keď spĺňajú $B$, tvrdenie $\iota x A = \iota x B$ je pravdivým. Vo FD2 a aj FDExt platí, že neexistujúce objekty sú jeden jediný objekt: $\neg \exists x A \Rightarrow \iota x A = \iota x (x \neq x)$. V FDExt ale neplatí, $\neg \exists! x A \Rightarrow \iota x A = \iota x (x \neq x)$, kde $\exists! x$ znamená \uv{existuje práve jedno x \dots}. FDExt teda zneplatňuje identitu tých objektov, ktoré sú označené prázdnym určitým popisom alebo takým, ktorý zahŕňa viac objektov \parencites[44]{LambertFLDD}[1043]{Nolt2007}.\par
+%Tuto rozdiel s klas. def. descr. th. Bencivenga
+Konkrétnu aplikáciu voľnej teórie určitých popisov uvádza Leehman, keď formalizuje vo filozofii veľmi známy Anselmov ontologický argument. Používa na to dvojdoménovú sémantiku, kde vnútorná doména reprezentuje objekty existujúce \textit{in re}, kým vonkajšia obsahuje objekty existujúce \textit{in intellectu}. Jediný predikát použitý v argumente, $M$, je známa Anselmova charakteristika Boha ako toho, nad čo sa nedá myslieť nič väčšie. 
+\begin{usudok}[H]
+\refstepcounter{usudokfig}
+\begin{logicproof}{2}
+	\neg \exists y (y = \iota x Mx) \Rightarrow \neg M(\iota x Mx) & Premisa 1\\
+	M(\iota x Mx) & Premisa 2\\ 
+	 \exists y (y = \iota x M x) & Záver
+\end{logicproof}
+\captionsetup{labelformat=usudok}
+\label{Anselm}
+\caption{Formalizácia Anselmovho ontologického argumentu \parencites[244]{Lehmann2002}.} 
+\captionsetup{labelformat=default}
+\end{usudok}
+\noindent Prvá premisa v úsudku \ref{Anselm} je fomalizovaná známa Anselmova úvaha o dokonalosti objektu označeného popisom $\iota x Mx$. Ak najdokonalejší objekt neexistuje \textit{in re}, tak neplatí, že je najdokonalejší. Druhá premisa zas hovorí, že objekt, ktorý spĺňa popis $\iota x Mx$, má vlastnosť $M$. Aplikáciou pravidla \textit{modus tollens} potom dostávame záver úsudku -- to, nad čo nie je možné myslieť nič väčšie, existuje \textit{in re} \parencites[244]{Lehmann2002}.\par
+
+%Rozlíšenie jednotlivých sémantík .. .. atĎ. Napíš aj o Chosen obj. (Lambert + Frege)
+%\begin{alignat}{3}
+ %     \iota x A  = \iota x A &\Rightarrow&& \text{E}!\iota x A \label{NCFD}\\
+ %\forall x (A \iff B) &\Rightarrow&& \iota x A = \iota x B
+%\end{alignat}
+
+V tejto časti sme si ukázali jednu z najbežnejších aplikácií voľných logík. V nasledujúcej pasáži sa zameriame na ich použitie v ďalšom, prirodzene lákavom prostredí -- vo fiktívnych svetoch.
+\subsubsection{Logika fikcie}
+Fikcia pozostáva z viet, ktoré sa nemyslia vážne. Aj keď občas obsahuje tvrdenia, ktoré sa zdajú byť faktické, nie vždy tak aj sú myslené. Pokiaľ sme si vedomí tejto nereálnosti fikcie, voľná logika sa nezdá byť potrebná. Stačí nám totiž stotožniť doménu diskurzu s fikčným svetom a čítanie oboch kvantifikátorov obohatiť formulkou \uv{v príbehu}, a môžeme akékoľvek logické otázky zodpovedať klasickou logikou.\par
+
+Ak však chceme fikcii povoliť nejaký vzťah s realitou, a nehovoriť iba o tom, čo je pravdivé v príbehu, ale čo je pravdivé skutočne, nemusí nám klasická logika postačovať. Rozlišovanie konzistencie, pravdivosti či nepravdivosti fikcie zmiešanej s realitou je práve miestom, kde sa voľná logika môže realizovať o niečo lepšie než tá klasická \parencites[]{sep-logic-free}.\par
+
+Prv, než sa pozrieme na to, ako aplikovať voľnú logiku na fikčné svety, je ale treba poznamenať, že aplikácia logiky nemusí byť vôbec v prípade fikcie žiadaná. Sainsbury podotýka, že \uv{dosiahnutie pravdy}\footnote{V origináli: \uv{attaining truth}} nie je vôbec cieľom fikčnej reprezentácie \parencites[2]{Sainsbury2009}. Hodnota fikcie je skôr niekde inde -- v jej roli obohatiť nás kognitívne, esteticky alebo emočne \parencites[150]{Dumitru2015}. Napriek tomu ale existuje určitý dopyt po logickom skúmaní fikcií.\par
+
+Entitami, ktoré majú označovať termy jazyka logiky fikcie, sú fikčné objekty. Podľa Dumitru sú fikčné objekty vo svojej podstate predmetmi referencie -- sú konštituované skrze príbeh alebo naratív, a ich zavedenie spravidla funguje za pomoci určitých popisov. Dumitru hovorí, že fikčné objekty ontologicky závisia od popisov, ktoré boli použité pri ich uvedení. Z toho hľadiska nemôže existovať nijaký fikčný objekt, ktorý by nemal nejakú svoju príznačnú črtu. Práve pre túto naviazanosť na charakteristické rysy je dobré logiku fikcie budovať aj pomocou teórie určitých popisov. Keďže chceme, aby niektoré atomické formuly obsahujúce prázdne, fikčné termy boli pravdivé, ideálna logika fikcie bude pozitívna voľná logika. A keďže fikcia silne súvisí s určitými opismi, ako ukázal Dumitru, k pozitívnej voľnej logike musíme ešte pridať teóriu voľných určitých popisov, ktorú sme opísali v predchádzajúcej časti \parencites[151--152, 154]{Dumitru2015}.\par
+Dumitrov prístup ale nie je jediný, Sainsbury v \textit{Reference without Referents} hovorí, že správna logika fikcie je negatívna voľná logika. Dôvodom pre to má byť nespochybniteľné zlyhanie referencie fiktívnych mien -- objekty, ktoré pomenúvajú, jednoducho neexistujú \parencites[69]{Sainsbury2005}.  I keď sa zdá, že Sainsburyho prístup je jednoduchý, priamočiary a azda aj správny, aj v jeho prípade nájdeme viaceré komplikácie. Ak totiž miešame fiktívny a reálny svet, miešame vo formulách aj prázdne a neprázdne termy. Takéto vety by teda podľa Sainsburyho mali byť všetky nepravdivé. No Nolt ukazuje, že niektoré prípady týchto viet považujeme za zjavne pravdivé: \uv{Glum je známejší ako Gödel}\footnote{V origináli: \uv{Gollum is more famous than Gödel.}} \parencites[vlastný preklad,][]{sep-logic-free}.\par
+Práve preto sa zdá byť prirodzenejšia cesta pozitívnej logiky. Avšak stále zostáva otázkou, ktorú sémantiku si je treba zvoliť. V prípade, že fiktívnym menám uprieme schopnosť k niečomu skutočne referovať, je na mieste zvoliť jednodoménovú pozitívnu sémantiku s parciálnou funkciou realizácie symbolov. Ak sa ale rozhodneme opačne, vhodnou môže byť práve dvojdoménová sémantika s disjunktnými doménami. Vonkajšiu doménu môžeme zaplniť fiktívnymi objektami a vnútornú reálnymi \parencites[]{sep-logic-free}. Takáto sémantika potom povoľuje veľmi jednoduché narábanie s predikátmi naprieč fiktívnym a reálnym svetom presne podľa pravidiel, ktoré sme uviedli vo výrazoch \ref{posAtomic}--\ref{PFLmodels(forAll)}. Nakoniec niečo také môže byť aj prirodzenou požiadavkou na logiku fikcie. Veď zaiste by sme chceli, aby jeden a ten istý predikát bol pravdivý aj o reálnych, aj o fiktívnych entitách. Ako príklad nám môže slúžiť predikát \uv{byť detektív}, ktorý chceme rovnako prisúdiť Sherlockovi Holmesovi a aj miestnemu existujúcemu vyšetrovateľovi.\par
+V tejto časti sme si ukázali aplikáciu voľných logík na fiktívne svety, ktoré sa nejakým spôsobom vzťahujú aj k reálnemu svetu. Voľná logika sa však dá použiť aj v o niečo praktickejších či technickejších oblastiach, ako uvidíme v nasledujúcej časti venovanej parciálnym funkciám a počítačovým programom.
+\subsubsection{Parciálne a nestriktné funkcie}
+%.......... Lambert, van Dalen..... Lambert, Gumb
+Parciálne funkcie sú v matematike a programovaní veľmi bežné. Každý z nás bol na hodinách matematiky upozornený, aby nedelil nulou alebo nepočítal tangens pravého uhla. Napriek ich všednosti, v klasickej logike sú parciálne funkcie prehliadané či dokonca zakázané. V klasickej logike každý singulárny term, hoc aj ten, ktorý vytvoríme pomocou funkcie, musí niečo denotovať. Pre každý funkčný symbol $f$ teda platí, že jeho aplikácia na akékoľvek termy, je definovaná: $\forall x_{1}\dots\forall x_{n} \exists y (y = f(x_{1},\dots,x_{n}))$. Ináč povedané, všetky funkcie v klasickej logike sú totálne. Voľná logika predstavuje možnosť, ako do logiky priniesť aj parciálne funkcie -- funkcie bez definovanej hodnoty, pre niektoré vstupy. Definovanosť výstupu pre zadaný vstup sa dá vo voľnej logike zaznačiť pomerne jednoducho. Stačí na to použiť predikát existencie $\text{E}!$ \parencites[]{sep-logic-free}.\par 
+Okrem parciálnych funkcií sa vo voľnej logike dá jednoducho narábať aj s funkciami, ktoré majú definovaný výstup aj v prípade, že nie sú dané či vypočítané všetky ich vstupy. Tieto funkcie nazývame neprísnymi funkciami (angl. \textit{non-strict functions}). Jednou z nich je napríklad $f(x,y) = x$. Tá, ako uvádza Nolt, môže navrátiť hodnotu $1$ aj v prípade, že za $y$ dosadíme prázdny term, povedzme $1/0$ \parencites[]{sep-logic-free}. Podobne sú nestriktné ale aj napríklad logické operátory v jazyku Python, ktoré v prípade, že to nie je potrebné, nevyhodnocujú všetky členy. Preto napríklad výraz disjunkcie \uv{True or 1/0} navracia pravdu (hodnotu True) aj napriek prítomnosti prázdneho termu. Mnoho programovacích jazykov obsahuje tiež spôsoby riadenia toku programu, medzi ktoré okrem iných patria aj podmienky. Tie na základe vyhodnotenia pravdivostnej hodnoty podmienky zvolia, ktorá časť kódu sa má vykonať. Voľné logiky by teda mohli nájsť uplatnenie aj v prípade, ak podmienka obsahuje prázdny term.\par
+Logiky týkajúce sa parciálnych funkcií sú prevažne negatívne a používajú jednodoménovú neinkluzívnu sémantiku. Nevýhodou však je, že v takýchto logikách platí podmienka striktnosti všetkých funkcií: $\text{E}!f(t_1,\dots,t_n) \Rightarrow (\text{E}!t_1 \land \dots \land \text{E}!t_n)$. Preto, ak chceme získať aj možnosť práce s nestriktnými funkciami, musíme použiť pozitívnu sémantiku. Väčšinou sa pritom jedná znova o jednodoménové sémantiky, aby sa zabránilo zapĺňaniu vonkajšej domény definične nejasnými entitami \parencites[159--160]{Gumb2001}[1046]{Nolt2007}[]{sep-logic-free}.  V prípade, že sa predsa len používa dvojdoménová sémantika, vonkajšia doména sa najčastejšia zapĺňa objektami, ku ktorým majú referovať prázdne termy, napríklad chybovými hláseniami či \textit{errormi} \parencites[1047]{Nolt2007}. Napriek rôznorodosti zdrojov chýb v počítačových systémoch je možné vonkajšiu doménu zaplniť aj jediným takýmto objektom \parencites[160--161]{Gumb2001}.\par
+Ukázali sme si využite voľných logík pri definíciách parciálnych a neprísnych funkcií. Tu sa však využiteľnosť voľnej logiky vo formálnejších odvetviach nekončí. V nasledujúcej časti si ukážeme, ako sa dá voľná logika využiť pri budovaní niečoho tak základného ako je teória množín.  
+
+%Klasická logika vyžaduje, aby všetky jej funkcie boli totálne, a ich hodnoty niečo označovali. V informatike sú pomerne bežné aj parciálne funkcie, ktoré nemajú definovaný výstup pre akýkoľvek vstup. Voľná logika predstavuje prirodzený nástroj pre ich definíciu. Ďalším v informatike využívaným konceptom sú neprísne funkcie (angl. \textit{non-strict functions}). Tie odkladajú vyhodnotenie svojich argumentov, pokým nie sú potrebné, a môžu navracať výsledok aj v prípade nedefinovaných argumentov. Podľa Gumba sú na prácu s takýmito funkciami vhodné namiesto klasickej alebo negatívnej logiky pozitívne voľné logiky \parencites[159--160]{Gumb2001}[]{sep-logic-free}.\par
+
+\subsubsection{Teória množín}
+Mnohé paradoxy v naivnej teórii množín vznikajú pre jej závislosť na existenčnom importe. Najzreteľnejším príkladom je existenčná zaťaženosť axiómy abstrakcie:
+\begin{alignat}{3}
+ 	\exists y \forall x ((x \in y) \iff A(x))\label{abstrNaive}
+\end{alignat}
+\noindent Výraz \ref{abstrNaive} hovorí, že, ak máme tvrdenie $A(x)$, v ktorom je $x$ voľne, tak existuje množina $y$ taká, že $x$ je jej prvkom práve vtedy, ak má vlastnosť $A$. Pričom na predikát $A$ nekladieme nijaké špeciálne nároky. Toto však vedie k známej antinómii, Russellovmu paradoxu, ktorá konštatuje existenciu množiny, ktorá obsahuje všetky množiny, ktoré neobsahujú seba: $\{x, x \notin x\}$. Tento dobre prebádaný problém viedol v historickom vývoji teórie množín k rozvoju axiomatických teórií, ktoré obsahujú výraz \ref{abstrNaive} v nejakej obmedzenejšej, rozumnejšej podobe \parencites[1]{BencivengaTM}. Ukázali sme, že voľná logika otvorene priznáva všetky skryté existenčné predpoklady. Vďaka tomu nám umožňuje jasne rozlišovať medzi tými axiómami v teórii, ktoré sa týkajú základnej povahy objektov, a tými, ktoré sa týkajú iba ich existencie. Toto rozlíšenie je taktiež viditeľné vo voľnej teórii množín \parencites[1044]{Nolt2007}.\par
+Axiómu abstrakcie vo voľnej teórií množín (výraz \ref{abstrNaive}) môžeme zbaviť nároku na existenciu novej množiny odtrhnutím prefixu s $\exists y$. Ak navyše prijmeme ako náš základný logický aparát voľnú logiku, vznikne nám nová axióma abstrakcie, tentokrát nie naivnej teórie množín ale voľnej:
+\begin{alignat}{3}
+ 	\forall x ((x \in t) \iff A(x))\label{abstrFST}
+\end{alignat}
+\noindent Keďže sa pohybujeme vo voľnej logike, term $t$ vo výraze \ref{abstrFST} môže byť prázdny. To znamená, že pôvodná axióma abstrakcie stráca svoju existenčnú požiadavku, a zabraňuje tak odvodeniu spomínaného Russellovho paradoxu. Na to, aby sme ho odvodili aj vo voľnej teórii množín, by sme museli odvodiť najprv $\text{E}! \{x, x \notin x\}$, čo ale nedokážeme \parencites[4--5]{BencivengaTM}[1044--1045]{Nolt2007}.\par
+Axióma \ref{abstrFST} spolu s axiómou extenzionality (výraz \ref{extenFST}) uzatvára dvojicu axióm, ktoré hovoria o povahe množín. Prvá axióma hovorí o podmienkach, za ktorých je nejaký objekt prvkom množiny. Druhá axióma zas hovorí o jednoznačnom vymedzení množiny jej (existujúcimi) prvkami -- dve množiny sú jedna a tá istá, pokiaľ majú všetky prvky rovnaké. Ani jedna z axióm sa ale nevyjadruje nijak k existencii množín. Práve tu leží výhoda voľnej logiky, ktorá na rozdiel od klasickej nezmiešava tieto dva druhy axióm do jednej.
+\begin{alignat}{3}
+ 	\forall x (x \in s \iff x \in t) \Rightarrow s = t \label{extenFST}
+	%&\neg&& \text{E}! \lambda x (x \notin x) \label{RusselAntinomy}
+\end{alignat}
+\noindent Prázdne termy vo voľnej teórii množín sa môžu na prvý pohľad zdať čudné, pretože nie je jasné, čo presne a či označujú. Jedná sa o nereálne, neexistujúce koreláty existujúcich množín, ktoré môžu byť prvkami existujúcich rovnako ako aj neexistujúcich množín. Závery, ku ktorým Bencivenga prichádza sú pozoruhodné. Konštatuje, že ku každej neexistujúcej množine je priradená existujúca jednoprvková množina, ktorá je následne na základe axiómy extenzionality \ref{extenFST} totožná s prázdnou množinou.\par
+Ďalšou zaujímavosťou je, že Bencivenga dokazuje existenciu jednoprvkových množín obsahujúcich neexistujúce množiny. To znamená, že, aj keď množina všetkých množín, ktoré sa neobsahujú, neexistuje, existuje množina, ktorá túto neexistujúcu množinu obsahuje. Avšak nijaká paradoxnosť nevzniká, pretože v Bencivengovom systéme nemôžeme z existencie množiny $\{t\}$ odvodiť existenciu jej prvku $t$. Vhodné je aj spomenúť dôsledok, ktorý sa zdá veľmi prirodzený. Ak použijeme spomínanú Leonardovu terminológiu všeobecnej a jednotlivej existencie, môžeme povedať, že koncepty (napríklad $\{t\}$) nemusia existovať všeobecne, a napriek tomu môžu existovať jednotlivo -- môžu byť bez reálneho, existujúceho zástupcu ($t$ neexistuje, čiže neplatí $\exists x(x \in \{t\})$), no ony samotné existovať môžu (platí $\text{E}!\{t\}$) \parencites[9]{BencivengaTM}[1045--1046]{Nolt2007}.\par
+Za povšimnutie stojí aj to, aký vzťah má táto teória, v ktorej môžu množiny obsahovať nejaké prvky, no pritom byť podľa extenzionality totožné s prázdnou množinou, s Martinovou teóriou nulového indivídua z predchádzajúcej časti práce. Martin totiž hovoril o nulovom indivíduu ako o súčasti prázdnej množiny. Schválne sa vyhýbal slovu \uv{prvok}, aby netvrdil, že prázdna množina má prvky. Tu ale vidíme, že množiny, ktoré sú z hľadiska ich obsahu totožné s prázdnou množinou, skutočne nejaké prvky majú!\par
+Tradičná teória množín je význačná svojou hierarchickou štruktúrou, kde existencia zložitejších množín závisí od existencie jednoduchších množín, pričom tie najjednoduchšie sú napríklad v axiomatickom systéme ZF postulované. V axiomatickom rámci voľnej teórie množín nájdeme obdobnú hierarchiu plynúcu z konštrukčných axióm komplexnejších množín. Najvýraznejším rozdielom ale je, že vo voľnej teórii množín môžu prvkami existujúcich množín byť neexistujúce množiny, čím odpadá potreba nadbytočne postulovať existenciu \parencites[13--14]{BencivengaTM}. Napriek viditeľne zaujímavým teoretickým vlastnostiam voľnej teórie množín, Nolt konštatuje, že táto teória doposiaľ nenašla nijaké skutočné využitie či natoľko horlivého prívrženca, aby ju rozvíjal \parencites[1046]{Nolt2007}.\footnote{Zaujímavosťou je, že voľná logika bola nedávno použitá aj na axiomatizáciu iného, vysoko abstraktného odvetvia matematiky, teórie kategórií. Viac viď \citeauthor{benzmüller2018axiomatizing} (\citeyear{benzmüller2018axiomatizing}).}
+%\subsubsection{Počítačové programy}
+%Mnoho programovacích jazykov obsahuje spôsoby riadenia toku programu. Medzi ne patria napríklad podmienky, ktoré fungujú na základe vyhodnotenia pravdivostnej hodnoty nejakého tvrdenia. Podľa získanej pravdivostnej hodnoty zvolia, ktorá časť kódu sa má vykonať. Čo sa však stane v prípade, keď podmienka obsahuje prázdne termy?\par
+%V takom prípade sa zdá byť vhodná aplikácia nejakej voľnej logiky. Neutrálna sa nezdá vhodná, pretože niektoré prípady by boli funkčné a niektoré nie. Negatívna je zas veľmi jednoduchá, a vždy danú podmienku zneplatní, priebeh kódu bude teda skoro už vopred daný. Najvhodnejšia sa zdá byť pozitívna voľná logika, ktorá zneplatní len niektoré tvrdenia a nie všetky. V prípade programovacích jazykov, ktoré nevyžadujú vyhodnotenie všetkých zadaných výrazov skôr než sú potrebné, je najvhodnejšia podľa Lamberta a Gumba neprísna pozitívna voľná logika (angl. \textit{nonstrict positive free logics}).\par
+
+Záverom možno povedať, že štúdium aplikácií voľnej logiky v rôznych oblastiach, ako sú určité popisy, fikcia a teória množín, zdôrazňuje jej všestrannosť a význam pri riešení zložitých logických problémov z rozmanitých oblastí. Voľná logika má oproti klasickej logike výrazné výhody, hlavne pokiaľ ide o zaobchádzanie s prázdnymi termami. Z toho vyplýva aj ich využiteľnosť pri definovaní parciálnych a nestriktných funkcií či aplikácia v otázkach sémantiky fiktívneho diskurzu. Využitie voľnej logiky nie je nutné, no vidíme, že v spomínaných prípadoch predstavuje plnohodnotnú náhradu za klasickú logiku, pričom sa opiera aj o jasné filozofické dôvody -- redukovať existenčné predpoklady všade, kde to ide.
+
+%\subsection{Problémy voľných logík}
+
+\subsection{Zhrnutie}
+V tejto časti práce sme hlavnými myšlienkami nadviazali na prvú časť práce venovanú inkluzívnej logike. Voľná logika je totiž prirodzeným vyústením ešte hlbšieho záujmu o stlmenie zbytočných existenčných nárokov v logike. Na rozdiel od inkluzívnej logiky je ale jej jazyk bohatší -- obsahuje nič neoznačujúce termy. Navyše voľná logika je tiež viac používaná a popísaná v literatúre.\par
+Na začiatku časti sme sa venovali voľnej logike obecne a ukázali sme, že možno vhodnejším názvom než voľná logika je jeho plurálová verzia voľné logiky. Existuje mnoho voľných logík, ktoré sa líšia vo svojom prístupe k nič neoznačujúcim termom. V pasáži tomu venovanej sme si predstavili tri rôzne sémantiky -- pozitívnu, negatívnu a neutrálnu. Zároveň sme si pri ich prezentácii ukázali aj tri prístupy k tomu, ako tieto sémantiky uchopiť.\par 
+Pri pozitívnej logike, ktorá niektoré formuly tvaru $\text{E}!t$ obsahujúce prázdne termy považuje za pravdivé, sme uviedli asi najprirodzenejší prístup dvojdoménovej sémantiky. Jeho obyčajnosť pramení z toho, že nevyžaduje veľké zmeny pri definícii funkcie interpretácie $r$. Tá je, rovnako ako v klasickej logike, totálna. Jediná zmena je, že je definovaná pomocou jedinej, jednoduchej domény diskurzu, ale využíva dve množiny -- vonkajšiu a vnútornú doménu. Vzťah týchto domén je naprieč literatúrou rozdielny, čo sme demonštrovali odkazmi na jednotlivých autorov, a nákresom.\par
+Negatívnu logiku sme prezentovali ako logiku parciálnej funkcie $r$. V takomto prístupe nie je potrebné postulovať dve domény existujúcich a neexistujúcich objektov. Stačí nám parciálnosť funkcie $r$. Tá zabezpečí, že pre niektoré termy $t$ nám ich realizácia v doméne $D$ bude chýbať, čo môžeme interpretovať tak, že sú prázdne, respektíve že to, čo označujú, neexistuje. Nevýhodou tohto prístupu ale môže byť jeho niekedy až príliš zjednodušujúci prístup k formulám s prázdnymi termami. Zvlášť v použití voľnej logiky pri zachytení úvah v prirodzenom jazyku sa nám táto vlastnosť môže zdať ako nežiadúca. V tejto aplikácií sa skôr zdá vhodnejšia ontologicky bohatšia sémantika dvoch domén. Ďalšou komplikáciou negatívnej logiky je jej neklasická teória identity. Pre prítomnosť prázdnych termov totiž neplatí jej reflexivita.\par
+Ako poslednú sme si uviedli neutrálnu sémantiku. Tá pristupuje k ohodnoteniu formúl s prázdnymi termami konzervatívnejšie; vyhýba sa mu. Tým ale vznikajú diery v pravdivostných hodnotách, čo môže byť pre viacerých logikov znepokojujúce, pretože nie je jasné, akú pravdivostnú hodnotu budú mať komplexnejšie formuly, pokiaľ sú vyskladané z formúl s dierami. Aspoň malou záplatou na niektoré diery je ale prezentovaný koncept supervaluácií, ktoré zaviedol Van Fraassen. Tie dokážu niektoré diery vyplniť na základe úvah nad tým, akú hodnotu by dané formuly mali, pokiaľ by prázdne termy skutočne denotovali. Pokiaľ sa všetky možné úvahy zhodnú na výslednej hodnote, táto hodnota sa stane hodnotou predtým deravej formuly. Príklad užitočnej formuly, ktorú zachránia až supervaluácie, je $\neg(P(t) \land \neg P(t))$. Každá sémantika má tak svoje výhody a nevýhody. Preto je vhodné pred každým použitím zvážiť, ktorý nástroj je na tú danú aplikáciu najvhodnejší, aby sme si vopred nevytvorili problémy vyplývajúce zo zvoleného systému.\par
+V poslednej pasáži sme sa venovali aplikáciám voľných logík. Ukázali sme si, ako sa dá preformulovať známa teória určitých popisov do voľnej logiky. Taktiež sme predstavili viaceré teórie určitých popisov, ktoré sú hierarchicky zoradené na základe toho, akú mieru obmedzení kladú na formuly obsahujúce prázdne popisy. Konkrétne sme si predstavili systémy MFD, FD2 a FDExt, ktoré zaviedol sám Lambert.\par
+Ďalšie zaujímavé aplikácie voľnej logiky sú v matematike a programovaní. Uviedli sme, ako sa dá voľná logika použiť v prípade definovania parciálnych a nestriktných funkcií, ktoré sú vo veľkej miere prítomné v oboch spomínaných odvetviach. Voľná logika, hlavne jej pozitívny dvojdoménový variant, je navyše použiteľná aj pri práci s chybovými hláseniami v programovaní. Ako poslednú aplikáciu v matematike sme si uviedli voľnú teóriu množín, ktorá sa snaží, podobne ako celý program voľnej logiky, odstrániť niektoré zbytočné existenčné nároky z tohto podstatného odvetvia. Ukázali sme si popri tom najmä Bencivengovu teóriu, ktorá povoľuje existenciu dvoch druhov množín -- existujúcich a neexistujúcich, pričom neexistujúce množiny môžu byť prvkami existujúcich množín. V špekulatívnejšom závere tejto časti sme sa snažili aj načrtnúť paralelu tejto teórie s Martinovým konceptom nulového indivídua vyskytujúceho sa v prázdnej množine.\par
+Posledná aplikácia voľných logík, ktorú sme uviedli, bola v logike fikcie. Fiktívne príbehy zo svojej definície prevažne obsahujú termy, ktoré sú prázdne, lebo označujú neexistujúce, vymyslené predmety. Niekedy však nejakým spôsobom interagujú aj s reálnym svetom -- napríklad ak hovoria o tom, že Sherlock Holmes žije v Londýne alebo hovoria o nejakom vedeckom fakte. V každom z týchto prípadov sa zdá byť voľná logika vhodná na uchopenie argumentov súvisiacich s fikciou.\par
+\pagebreak
+\section{Záver}
+V tejto práci sme skúmali vplyv podmienky neprázdnosti domény diskurzu na sémantiku predikátovej logiky. 
+Prenikli sme do detailov sémantiky klasickej logiky, aby sme dokázali porovnať inkluzívnu a exkluzívnu logiku. 
+Rozoberali sme, ako inkluzívna logika narába s premennými a interpretáciou formúl v prázdnej štruktúre. 
+Poukázali sme na jej možné problémy a dôsledky. 
+Uviedli sme argumenty, pre ktoré je dôležité sa jej venovať, a aj tie, podľa ktorých predstavuje skôr nezaujímavú súčasť logiky.\par
+Celé naše snaženie pritom vychádzalo z toho, čo vyjadril Russell v citáte z úvodu práce.
+Inkluzívna a aj voľná logika sa snažia redukovať ontologické požiadavky, ktoré sú v klasickej logike prítomné. 
+Dôvodom pre to je najmä nezriedkavý názor, že logika nemá právo rozhodovať o tom, čo skutočne existuje. 
+Odpovede na otázky existencie patria skôr do područia ontológie či prírodných vied, a logika, ako nástroj, môže byť použitá, až keď je rozhodnuté o tom, čo, a či vôbec niečo, je. 
+Ak skutočne chceme, aby sa logika nevmiešavala do pôsobiska iných odvetví, musíme v ďalšom logickom bádaní voliť skôr inkluzívnu alebo voľnú logiku.
+Tento argument či dôvod pre venovanie sa inkluzívnym logikám je, sme presvedčení, veľmi silný.  
+Zaujímavým by ale zaiste bolo aj hlbšie preskúmanie toho, či tento nárok na neutralitu logiky je skutočne aj opodstatnený a nejde len o prehnané tendencie purizmu; veď logika je možno taký nástroj, ktorý je zo svojej definície použiteľný, až keď už je rozhodnuté, že je o čom hovoriť. 
+Ďalším problémom, ktorý pri prepiatych tendenciách o ontologický minimalizmus nastáva, je strata všeobecnej aplikovateľnosti.\par
+Zmysluplnosť nástroja sa skrýva v jeho využiteľnosti. V prípade voľných a inkluzívnych logík je otázne, či logika nestráca svoju univerzálnu využiteľnosť. Vzniknuté technické problémy, ktoré sme popísali, sú tak komplikované, že zbytočne prenášajú pozornosť z aplikácií logiky na jej teóriu. Dôkazom pre to je aj pomerne malý ohlas, ktorý tieto logiky v odbornej literatúre majú. Dá sa polemizovať, či za týmto neúspechom nestojí práve to, že voľné a inkluzívne logiky nepomohli, ako hovorí aj Nolt, odhaliť nejakú presvedčivú, skrytú ríšu právd, ale skôr svojimi teoretickými nejasnosťami spôsobili iba veľký chaos \parencites[1057]{Nolt2007}.
+%Podstatou nástroja je jeho využiteľnosť, je otázne, či sa pre romantickosť inkluzívnych logikov, nepodarilo vyliať s vodou aj dieťa.   v dobrej vôli, ktorú inkluzívni a voľní logici mali, 
+%Ak chceme, aby si logika nenárokovala tvrdenia o existencii, ktoré sa nezdajú byť z jej oblasti, inkluzívna alebo voľná logika by mala byť naším hlavným nástrojom každého ďalšieho logického bádania. 
+Napriek zjavným technickým nevýhodám inkluzívnej a voľnej logiky existujú aj také odvetvia, kde by, myslíme si, mohla byť viac používaná; ide najmä o oblasti, kde nám oveľa viac záleží na redukovaní alebo aspoň explicitnení existenčných požiadaviek.\par
+Medzi také patrí zaiste aj samotná filozofia, ktorá by z použitia voľnej alebo inkluzívnej logiky mohla ťažiť predovšetkým v prípade metafyzických argumentov, ktoré sa snažíme logicky formalizovať. Príkladom na to môže byť formalizácia Descartesovho argumentu, ktorú s pomocou vonkajšieho kvantifikátora uvádza Nolt: $Ce, \Pi x (C(x) \Rightarrow \text{E}!x)$, čiže \uv{myslím} a \uv{čokoľvek možné, čo myslí, existuje}. Z toho potom vyplýva \uv{existujem} -- $\text{E}!e$. Ak by sme sa tento argument pokúsili formalizovať v klasickej logike, nedospeli by sme k obdobne uspokojivému výsledku, už len pre to, že by bola existencia objektu označeného termom $e$ vopred predpokladaná \parencites[1054]{Nolt2007}[]{sep-logic-free}.\par
+Príťažlivým problémom v otázkach voľných logík môže byť aj určenie toho, akú teóriu pravdy vyznávajú. Preskúmali sme viaceré sémantiky voľných logík. Majú všetky tieto logiky totožnú teóriu pravdy? Ak áno, prečo dospievajú v prípade tých istých tvrdení k odlišným pravdivostným hodnotám? Ak nie, akú teóriu zastávajú? Odpoveď na túto otázku nie je celkom istá, no môže nám priniesť zaujímavé poznatky týkajúce sa využiteľnosti týchto logík a povahy neexistujúcich objektov.\par
+Poslednou komplikáciou, ktorej sa chceme venovať, je voľnosť voľných logík. Ontologicky voľnou logikou sa totiž nezačneme zaoberať len tým, že z klasickej logiky kúsok po kúsku odstránime existenčné predpoklady. V istom okamihu sa totiž musíme zastaviť, aby sme urobili rozhodnutie, akú sémantiku prijať. Práve táto sloboda voľby je ale do istej miery osudná tomu, o čo sa voľné logiky usilujú. Ak chcú zastávať post úplne analytickej, nevyhnutnej, od všetkého nezávislej logiky je zvláštne, že sa v takto dôležitom rozhodnutí spoliehajú na čistý prejav samovôle. Ako najväčší prínos voľnej logiky sa javí predovšetkým jasné vyjadrenie existencie objektov označených termami a prípustnosť prázdnych termov. Romantickosť voľnej logiky siaha len potiaľto, ďalej, pri výbere sémantiky, nastupuje už len pragmatizmus motivovaný úvahami, na čo konkrétne chceme logiku použiť.\par
+
+Hoci sme uviedli viaceré pochybnosti o inkluzívnej logike a projekte voľných logík, myslíme si, že voľná a inkluzívna logika by mali byť vo filozofickej literatúre viac využívané, pretože oproti klasickej logike predstavujú z pohľadu ontologických predpokladov menej náročné, čistejšie systémy, ktoré sú stále dostatočne dobre využiteľné. Tento názor sme sa pokúsili ukázať aj v tejto práci.
+
+\pagebreak
+%\nocite{*} %All bibliography
+\printbibliography
+
+\end{document}
