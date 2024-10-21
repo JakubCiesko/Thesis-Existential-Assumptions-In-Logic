@@ -1,4 +1,5 @@
-# Bachelor Thesis: **Existence Assumptions in Logic: From Classical Predicate Logic to Free Logic**
+# Bachelor Thesis: Empty Domain in First-Order Predicate Logic
+**Existence Assumptions in Logic: From Classical Predicate Logic to Free Logic**
 
 This repository contains my bachelor thesis, which explores the implications of removing existential assumptions from classical first-order predicate logic. I aim to assist anyone who is interested in this topic, whether they need literature, are exploring similar questions, or simply want to discuss these ideas further.
 
